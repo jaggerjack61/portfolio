@@ -7,7 +7,7 @@
     class="py-16 relative z-10"
   >
     <div class="container mx-auto px-4">
-      <div class="max-w-4xl mx-auto bg-surface rounded-xl p-8 border border-border">
+      <div class="max-w-4xl mx-auto bg-surface rounded-xl p-8 shadow-card border border-gray-100">
         <h2 class="text-3xl font-bold text-text-primary mb-6">
           About Me
         </h2>

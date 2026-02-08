@@ -11,8 +11,7 @@ export default {
     extend: {
       colors: {
         background: '#020202', // Cursor-like deep black
-        surface: '#121212', // Lighter, opaque card background
-        card: '#121212', // Alias for explicit card usage
+        surface: '#09090b', // Slightly lighter for cards
         primary: {
           DEFAULT: '#ffffff', // White for primary actions (high contrast)
           muted: '#a1a1aa', // Zinc 400

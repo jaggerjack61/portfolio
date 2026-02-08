@@ -22,9 +22,9 @@ const certifications = [
         <div
           v-for="(cert, index) in certifications"
           :key="index"
-          class="bg-surface rounded-xl p-6 border border-border hover:border-text-secondary/30 transition-all duration-300 hover:-translate-y-1 group flex items-start gap-4"
+          class="bg-surface rounded-xl p-6 shadow-card hover:shadow-card-hover border border-gray-100 transition-all duration-300 hover:-translate-y-1 group flex items-start gap-4"
         >
-          <div class="p-3 bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors border border-white/5">
+          <div class="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
             <span class="text-2xl text-primary">🏆</span>
           </div>
           <div>

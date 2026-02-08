@@ -21,13 +21,6 @@
     linear-gradient(to bottom, #18181b 1px, transparent 1px);
   background-size: 40px 40px;
   background-attachment: fixed;
-  background-color: #020202; /* Ensure base color is solid */
-}
-
-/* Force solid background for cards using the surface color */
-.bg-surface {
-  background-color: #121212 !important;
-  --tw-bg-opacity: 1 !important;
 }
 
 body {

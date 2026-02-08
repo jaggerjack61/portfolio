@@ -20,9 +20,9 @@ const skills = {
         <div
           v-for="(items, category) in skills"
           :key="category"
-          class="bg-surface rounded-xl p-6 border border-border hover:border-text-secondary/30 transition-all duration-300"
+          class="bg-surface rounded-xl p-6 shadow-card hover:shadow-card-hover border border-gray-100 transition-all duration-300"
         >
-          <h3 class="text-xl font-bold text-text-primary mb-6 border-b border-border pb-2">
+          <h3 class="text-xl font-bold text-secondary mb-6 border-b border-gray-100 pb-2">
             {{ category }}
           </h3>
           <ul class="space-y-3">

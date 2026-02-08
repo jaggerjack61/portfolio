@@ -46,21 +46,21 @@ onMounted(() => {
       </div>
       
       <!-- Terminal Window -->
-      <div class="bg-surface rounded-xl overflow-hidden shadow-glow border border-border font-mono transform hover:scale-[1.01] transition-transform duration-300">
+      <div class="bg-[#1E1E1E] rounded-xl overflow-hidden shadow-float border border-gray-800 font-mono transform hover:scale-[1.01] transition-transform duration-300">
         <!-- Terminal Header -->
-        <div class="bg-[#18181b] px-4 py-3 flex items-center gap-2 border-b border-border">
+        <div class="bg-[#2D2D2D] px-4 py-3 flex items-center gap-2 border-b border-black/50">
           <div class="flex gap-2">
-            <div class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/30" />
-            <div class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/30" />
-            <div class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/30" />
+            <div class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
+            <div class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
+            <div class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]" />
           </div>
-          <div class="ml-4 text-text-secondary text-xs font-medium flex-1 text-center pr-12">
+          <div class="ml-4 text-gray-400 text-xs font-medium flex-1 text-center pr-12">
             samuel@portfolio:~/contact
           </div>
         </div>
         
         <!-- Terminal Content -->
-        <div class="p-6 md:p-8 text-text-secondary space-y-2 text-sm md:text-base leading-relaxed overflow-x-auto bg-[#09090b]">
+        <div class="p-6 md:p-8 text-gray-300 space-y-2 text-sm md:text-base leading-relaxed overflow-x-auto">
           <div
             v-for="(line, index) in terminalLines"
             :key="index"
@@ -73,7 +73,7 @@ onMounted(() => {
             
             <span
               v-if="line.type === 'comment'"
-              class="text-text-muted mr-2 italic"
+              class="text-gray-500 mr-2 italic"
             >#</span>
             
             <span v-if="line.link">
@@ -81,11 +81,11 @@ onMounted(() => {
               <a
                 :href="line.link"
                 target="_blank"
-                class="text-[#F1F1F0] hover:text-white hover:underline underline-offset-4 decoration-white/50 transition-all cursor-pointer"
+                class="text-[#F1F1F0] hover:text-primary-light hover:underline underline-offset-4 decoration-primary-light/50 transition-all cursor-pointer"
               >
                 "{{ line.text.split('"')[3] }}"
               </a>
-              <span class="text-text-muted">,</span>
+              <span class="text-gray-400">,</span>
             </span>
             
             <span
@@ -97,14 +97,14 @@ onMounted(() => {
             
             <span
               v-else
-              :class="{'text-text-muted': line.type === 'comment', 'text-white': line.type === 'command'}"
+              :class="{'text-gray-500': line.type === 'comment', 'text-white': line.type === 'command'}"
             >
               {{ line.text }}
             </span>
             
             <span
               v-if="index === terminalLines.length - 1"
-              class="ml-2 w-2.5 h-5 bg-text-secondary inline-block align-middle"
+              class="ml-2 w-2.5 h-5 bg-gray-400 inline-block align-middle"
               :class="{'opacity-0': !cursorVisible}"
             />
           </div>

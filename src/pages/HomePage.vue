@@ -11,7 +11,6 @@ import Navigation from '@/components/ui/Navigation.vue'
 
 <template>
   <div class="relative w-full bg-background text-text-primary min-h-screen">
-    
     <Navigation />
 
     <main class="relative z-10 pt-16">
