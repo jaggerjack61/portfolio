@@ -37,38 +37,45 @@ const experiences = [
 <template>
   <section
     id="experience"
-    class="min-h-screen py-20 relative z-10"
+    class="py-24 relative z-10"
   >
-    <div class="container mx-auto px-4 pointer-events-auto">
-      <h2 class="text-4xl font-bold text-white mb-12 text-center">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-text-primary mb-12 text-center tracking-tight">
         Experience
       </h2>
-      <div class="max-w-4xl mx-auto space-y-12">
+      <div class="max-w-4xl mx-auto grid grid-cols-1 gap-6">
         <div
           v-for="(exp, index) in experiences"
           :key="index"
-          class="relative pl-8 border-l-2 border-primary/50"
+          class="group bg-surface border border-border rounded-xl p-8 hover:border-text-secondary/30 transition-all duration-300 relative overflow-hidden"
         >
-          <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary shadow-lg shadow-primary/50" />
-          <div class="bg-white/5 backdrop-blur-sm rounded-lg p-6 hover:bg-white/10 transition-colors">
-            <h3 class="text-2xl font-bold text-white">
-              {{ exp.role }}
-            </h3>
-            <p class="text-primary font-semibold">
-              {{ exp.company }}
-            </p>
-            <p class="text-sm text-gray-400 mb-4">
-              {{ exp.period }} | {{ exp.location }}
-            </p>
-            <ul class="list-disc list-inside space-y-2 text-gray-300">
-              <li
-                v-for="(item, i) in exp.description"
-                :key="i"
-              >
-                {{ item }}
-              </li>
-            </ul>
+          <!-- Hover Gradient -->
+          <div class="absolute inset-0 bg-gradient-to-tr from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          
+          <div class="flex flex-col md:flex-row md:items-start justify-between mb-6 gap-4 relative z-10">
+            <div>
+              <h3 class="text-xl font-semibold text-text-primary mb-1">
+                {{ exp.role }}
+              </h3>
+              <p class="text-text-secondary">
+                {{ exp.company }}
+              </p>
+            </div>
+            <span class="inline-flex items-center px-3 py-1 rounded-md bg-white/5 border border-white/5 text-xs text-text-muted font-mono">
+              {{ exp.period }}
+            </span>
           </div>
+          
+          <ul class="space-y-3 relative z-10">
+            <li
+              v-for="(item, i) in exp.description"
+              :key="i"
+              class="flex items-start gap-3 text-text-secondary text-sm leading-relaxed"
+            >
+              <span class="mt-1.5 w-1 h-1 rounded-full bg-text-muted flex-shrink-0" />
+              {{ item }}
+            </li>
+          </ul>
         </div>
       </div>
     </div>

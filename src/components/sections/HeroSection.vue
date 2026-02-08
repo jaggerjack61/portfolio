@@ -1,70 +1,48 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
-
-const heroImgRef = ref(null)
-
-onMounted(() => {
-  // Animate the profile picture to fade out and shrink as we scroll
-  // We don't move it to the navbar physically, we just crossfade.
-  gsap.to(heroImgRef.value, {
-    scrollTrigger: {
-      trigger: '#hero',
-      start: 'top top',
-      end: '300px top',
-      scrub: 1,
-    },
-    opacity: 0,
-    scale: 0.5,
-    y: -100, // Move up slightly
-    ease: 'power1.out'
-  })
-})
+// Cursor-inspired Hero Section
+const scrollToContact = () => {
+  const contactSection = document.getElementById('contact')
+  if (contactSection) {
+    contactSection.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 </script>
 
 <template>
   <section
     id="hero"
-    class="min-h-screen flex items-center justify-center relative z-10 pointer-events-none"
+    class="min-h-screen flex items-center justify-center relative z-10 overflow-hidden"
   >
-    <div class="container mx-auto px-4 pointer-events-auto text-center">
-      <div
-        id="hero-profile-container"
-        class="mb-8 relative inline-block"
-      >
-        <div
-          ref="heroImgRef"
-          class="w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-primary shadow-2xl mx-auto relative z-10 origin-center"
-        >
-          <img
-            src="/images/profile_pic.png"
-            alt="Samuel Jarai"
-            class="w-full h-full object-cover"
-          >
-        </div>
-        <!-- Decorative glow behind profile pic -->
-        <div class="absolute inset-0 bg-primary/30 blur-3xl -z-10 rounded-full scale-110" />
+    <!-- Subtle glow effects -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/[0.02] rounded-full blur-3xl -z-10" />
+    <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.03] via-transparent to-transparent -z-10" />
+
+    <div class="container mx-auto px-4 text-center max-w-4xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-border text-xs font-medium text-text-secondary mb-8">
+        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+        Available for new projects
       </div>
       
-      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">
-        Samuel Jarai
+      <h1 class="text-6xl md:text-8xl font-bold text-text-primary mb-8 tracking-tight leading-none">
+        Build software <br/>
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/50">faster.</span>
       </h1>
-      <p class="text-xl md:text-2xl text-gray-300 mb-8">
-        Full-Stack Software Engineer
+      
+      <p class="text-xl md:text-2xl text-text-muted mb-12 font-light leading-relaxed max-w-2xl mx-auto">
+        Full-Stack Engineer specialized in building robust, scalable systems with modern technologies.
       </p>
-      <div class="flex justify-center gap-4">
-        <a
-          href="#contact"
-          class="px-8 py-3 bg-primary hover:bg-blue-700 text-white rounded-full transition-colors"
+      
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <button
+          @click="scrollToContact"
+          class="px-8 py-3 bg-white text-black hover:bg-gray-200 rounded-md font-medium transition-all text-sm tracking-wide"
         >
           Contact Me
-        </a>
+        </button>
         <a
-          href="#projects"
-          class="px-8 py-3 border border-white text-white hover:bg-white/10 rounded-full transition-colors"
+          href="https://github.com/jaggerjack61"
+          target="_blank"
+          class="px-8 py-3 bg-surface border border-border text-text-primary hover:bg-white/5 rounded-md font-medium transition-all text-sm tracking-wide"
         >
           View Work
         </a>

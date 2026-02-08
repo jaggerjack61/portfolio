@@ -12,27 +12,25 @@ const certifications = [
 <template>
   <section
     id="certifications"
-    class="min-h-[50vh] py-20 relative z-10 flex items-center"
+    class="py-16 relative z-10"
   >
-    <div class="container mx-auto px-4 pointer-events-auto">
-      <h2 class="text-4xl font-bold text-white mb-12 text-center">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-text-primary mb-10 text-center">
         Certifications
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
           v-for="(cert, index) in certifications"
           :key="index"
-          class="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10 hover:border-accent/50 transition-all duration-300 hover:-translate-y-1 group"
+          class="bg-surface rounded-xl p-6 border border-border hover:border-text-secondary/30 transition-all duration-300 hover:-translate-y-1 group flex items-start gap-4"
         >
-          <div class="flex items-start gap-4">
-            <div class="p-3 bg-white/10 rounded-lg group-hover:bg-accent/20 transition-colors">
-              <span class="text-2xl">🏆</span>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold text-white group-hover:text-accent transition-colors leading-tight">
-                {{ cert }}
-              </h3>
-            </div>
+          <div class="p-3 bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors border border-white/5">
+            <span class="text-2xl text-primary">🏆</span>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-text-primary group-hover:text-primary transition-colors leading-tight">
+              {{ cert }}
+            </h3>
           </div>
         </div>
       </div>

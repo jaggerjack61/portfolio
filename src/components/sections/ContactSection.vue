@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 interface TerminalLine {
   type: string
@@ -18,82 +18,93 @@ const terminalLines = ref<TerminalLine[]>([
   { type: 'output', text: '  "linkedin": "linkedin.com/in/samuel-jarai",', highlight: true, link: 'https://linkedin.com/in/samuel-jarai' },
   { type: 'output', text: '  "location": "Harare, Zimbabwe"' },
   { type: 'output', text: '}' },
-  { type: 'command', text: '' } // Cursor line
+  { type: 'command', text: '' }
 ])
 
-// Simple cursor blink effect
 const cursorVisible = ref(true)
-setInterval(() => {
-  cursorVisible.value = !cursorVisible.value
-}, 500)
+
+onMounted(() => {
+  setInterval(() => {
+    cursorVisible.value = !cursorVisible.value
+  }, 500)
+})
 </script>
 
 <template>
   <section
     id="contact"
-    class="min-h-screen py-20 relative z-10 flex items-center justify-center"
+    class="py-24 relative z-10"
   >
-    <div class="container mx-auto px-4 pointer-events-auto max-w-3xl">
-      <h2 class="text-4xl font-bold text-white mb-12 text-center">
-        Get In Touch
-      </h2>
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-text-primary mb-4 tracking-tight">
+          Let's Connect
+        </h2>
+        <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+          Whether you have a question, a project idea, or just want to say hi, my terminal is always open.
+        </p>
+      </div>
       
-      <div class="bg-black/80 backdrop-blur-md rounded-lg overflow-hidden border border-gray-700 shadow-2xl font-mono text-sm md:text-base">
+      <!-- Terminal Window -->
+      <div class="bg-surface rounded-xl overflow-hidden shadow-glow border border-border font-mono transform hover:scale-[1.01] transition-transform duration-300">
         <!-- Terminal Header -->
-        <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
-          <div class="w-3 h-3 rounded-full bg-red-500" />
-          <div class="w-3 h-3 rounded-full bg-yellow-500" />
-          <div class="w-3 h-3 rounded-full bg-green-500" />
-          <div class="ml-4 text-gray-400 text-xs">
+        <div class="bg-[#18181b] px-4 py-3 flex items-center gap-2 border-b border-border">
+          <div class="flex gap-2">
+            <div class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/30" />
+            <div class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/30" />
+            <div class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/30" />
+          </div>
+          <div class="ml-4 text-text-secondary text-xs font-medium flex-1 text-center pr-12">
             samuel@portfolio:~/contact
           </div>
         </div>
         
         <!-- Terminal Content -->
-        <div class="p-6 text-gray-300 space-y-2">
+        <div class="p-6 md:p-8 text-text-secondary space-y-2 text-sm md:text-base leading-relaxed overflow-x-auto bg-[#09090b]">
           <div
             v-for="(line, index) in terminalLines"
             :key="index"
-            class="flex flex-wrap"
+            class="flex flex-wrap font-medium"
           >
             <span
               v-if="line.type === 'command'"
-              class="text-green-400 mr-2"
-            >$</span>
+              class="text-[#5AF78E] mr-3 font-bold"
+            >➜  ~</span>
+            
             <span
               v-if="line.type === 'comment'"
-              class="text-gray-500 mr-2"
+              class="text-text-muted mr-2 italic"
             >#</span>
             
             <span v-if="line.link">
-              <span class="text-purple-400 mr-2">"{{ line.text.split('"')[1] }}":</span>
+              <span class="text-[#9AEDFE] mr-2">"{{ line.text.split('"')[1] }}":</span>
               <a
                 :href="line.link"
                 target="_blank"
-                class="text-blue-400 hover:underline cursor-pointer"
+                class="text-[#F1F1F0] hover:text-white hover:underline underline-offset-4 decoration-white/50 transition-all cursor-pointer"
               >
                 "{{ line.text.split('"')[3] }}"
               </a>
-              <span class="text-gray-300">,</span>
+              <span class="text-text-muted">,</span>
             </span>
             
             <span
               v-else-if="line.type === 'output' && !line.link"
-              :class="{'text-yellow-300': line.text.includes('{') || line.text.includes('}')}"
+              :class="{'text-[#F2C055]': line.text.includes('{') || line.text.includes('}')}"
             >
               {{ line.text }}
             </span>
             
             <span
               v-else
-              :class="{'text-gray-500': line.type === 'comment'}"
+              :class="{'text-text-muted': line.type === 'comment', 'text-white': line.type === 'command'}"
             >
               {{ line.text }}
             </span>
             
             <span
               v-if="index === terminalLines.length - 1"
-              class="ml-1 w-2 h-5 bg-gray-400 inline-block align-middle"
+              class="ml-2 w-2.5 h-5 bg-text-secondary inline-block align-middle"
               :class="{'opacity-0': !cursorVisible}"
             />
           </div>

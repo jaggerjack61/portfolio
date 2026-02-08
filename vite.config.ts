@@ -13,13 +13,7 @@ export default defineConfig({
     assetsInlineLimit: 100000000, 
   },
   plugins: [
-    vue({
-      template: {
-        compilerOptions: {
-          isCustomElement: (tag) => tag.startsWith('Tres') && tag !== 'TresCanvas',
-        },
-      },
-    }),
+    vue(),
     viteSingleFile(), // 4. Add the plugin to the array
   ],
   resolve: {
