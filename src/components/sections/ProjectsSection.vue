@@ -14,7 +14,7 @@ const projects: Project[] = [
     desc: "Comprehensive academic tracking system for managing students, grades, and subjects.",
     tech: ["Laravel", "PHP", "MySQL"],
     link: "https://github.com/jaggerjack61/academic-tracker-back.git",
-    imageSrc: "/images/projects/academic-tracker-backend.png",
+    imageSrc: "images/projects/academic-tracker-backend.png",
     imageAlt: "Academic Tracker Backend project preview"
   },
   {
@@ -22,7 +22,7 @@ const projects: Project[] = [
     desc: "Django REST API for designing and managing WhatsApp chatbots with bulk messaging.",
     tech: ["Django", "Python", "WhatsApp API"],
     link: "https://github.com/jaggerjack61/ChatbotDesignerAPI.git",
-    imageSrc: "/images/projects/chatbot-designer-api.png",
+    imageSrc: "images/projects/chatbot-designer-api.png",
     imageAlt: "Chatbot Designer API project preview"
   },
   {
@@ -30,7 +30,7 @@ const projects: Project[] = [
     desc: "WhatsApp bot for NSSA registration and payments via Paynow.",
     tech: ["Laravel", "PHP", "Paynow"],
     link: "https://github.com/jaggerjack61/NSSA_Paynow.git",
-    imageSrc: "/images/projects/nssa-paynow-bot.jpg",
+    imageSrc: "images/projects/nssa-paynow-bot.jpg",
     imageAlt: "NSSA Paynow Bot project preview"
   }
 ]
