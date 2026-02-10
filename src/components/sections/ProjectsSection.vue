@@ -1,22 +1,37 @@
 <script setup lang="ts">
-const projects = [
+type Project = {
+  title: string
+  desc: string
+  tech: string[]
+  link: string
+  imageSrc: string
+  imageAlt: string
+}
+
+const projects: Project[] = [
   {
     title: "Academic Tracker Backend",
     desc: "Comprehensive academic tracking system for managing students, grades, and subjects.",
     tech: ["Laravel", "PHP", "MySQL"],
-    link: "https://github.com/jaggerjack61/academic-tracker-back.git"
+    link: "https://github.com/jaggerjack61/academic-tracker-back.git",
+    imageSrc: "/images/projects/academic-tracker-backend.png",
+    imageAlt: "Academic Tracker Backend project preview"
   },
   {
     title: "Chatbot Designer API",
     desc: "Django REST API for designing and managing WhatsApp chatbots with bulk messaging.",
     tech: ["Django", "Python", "WhatsApp API"],
-    link: "https://github.com/jaggerjack61/ChatbotDesignerAPI.git"
+    link: "https://github.com/jaggerjack61/ChatbotDesignerAPI.git",
+    imageSrc: "/images/projects/chatbot-designer-api.png",
+    imageAlt: "Chatbot Designer API project preview"
   },
   {
     title: "NSSA Paynow Bot",
     desc: "WhatsApp bot for NSSA registration and payments via Paynow.",
     tech: ["Laravel", "PHP", "Paynow"],
-    link: "https://github.com/jaggerjack61/NSSA_Paynow.git"
+    link: "https://github.com/jaggerjack61/NSSA_Paynow.git",
+    imageSrc: "/images/projects/nssa-paynow-bot.jpg",
+    imageAlt: "NSSA Paynow Bot project preview"
   }
 ]
 </script>
@@ -40,8 +55,13 @@ const projects = [
           <div class="absolute inset-0 bg-gradient-to-tr from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
           
           <div class="mb-6 relative z-10">
-            <div class="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
-              🚀
+            <div class="h-40 w-full rounded-lg overflow-hidden bg-white/5 border border-white/10 mb-4">
+              <img
+                :src="project.imageSrc"
+                :alt="project.imageAlt"
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                loading="lazy"
+              >
             </div>
             <h3 class="text-lg font-semibold text-text-primary mb-2">
               {{ project.title }}
