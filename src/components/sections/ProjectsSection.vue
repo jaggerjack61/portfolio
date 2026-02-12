@@ -10,6 +10,14 @@ type Project = {
 
 const projects: Project[] = [
   {
+    title: "SchemaField",
+    desc: "Schema-driven form builder and data capture platform with analytics.",
+    tech: ["React", "Django", "Django REST Framework"],
+    link: "https://github.com/jaggerjack61/SchemaField",
+    imageSrc: "images/projects/SchemaField.png",
+    imageAlt: "SchemaField project preview"
+  },
+  {
     title: "Academic Tracker Backend",
     desc: "Comprehensive academic tracking system for managing students, grades, and subjects.",
     tech: ["Laravel", "PHP", "MySQL"],
