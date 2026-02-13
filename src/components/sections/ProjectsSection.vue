@@ -47,27 +47,25 @@ const projects: Project[] = [
 <template>
   <section
     id="projects"
-    class="py-24 relative z-10"
+    class="relative z-10 py-24"
   >
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-text-primary mb-12 text-center tracking-tight">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="reveal section-title text-3xl md:text-4xl font-bold text-center text-text-primary mx-auto">
         Featured Projects
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
         <div
           v-for="(project, index) in projects"
           :key="index"
-          class="group bg-surface border border-border rounded-xl p-6 hover:border-text-secondary/30 transition-all duration-300 flex flex-col relative overflow-hidden"
+          class="reveal card p-6 flex flex-col group"
+          :class="index === 0 ? '' : `reveal-delay-${Math.min(5, index)}`"
         >
-          <!-- Hover Gradient -->
-          <div class="absolute inset-0 bg-gradient-to-tr from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-          
-          <div class="mb-6 relative z-10">
-            <div class="h-40 w-full rounded-lg overflow-hidden bg-white/5 border border-white/10 mb-4">
+          <div class="mb-6">
+            <div class="h-44 w-full rounded-lg overflow-hidden bg-background border border-border mb-4">
               <img
                 :src="project.imageSrc"
                 :alt="project.imageAlt"
-                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                class="h-full w-full object-cover transition-transform duration-300 hover:scale-[1.03]"
                 loading="lazy"
               >
             </div>
@@ -79,22 +77,24 @@ const projects: Project[] = [
             </p>
           </div>
           
-          <div class="mt-auto relative z-10">
+          <div class="mt-auto">
             <div class="flex flex-wrap gap-2 mb-6">
               <span
                 v-for="t in project.tech"
                 :key="t"
-                class="px-2 py-1 bg-white/5 rounded text-[10px] font-medium text-text-muted border border-white/5"
+                class="px-2 py-1 bg-background rounded text-[10px] font-medium text-text-muted border border-border"
               >
                 {{ t }}
               </span>
             </div>
             <a
               :href="project.link"
-              class="inline-flex items-center gap-2 text-sm text-text-primary hover:text-white transition-colors group/link"
+              class="inline-flex items-center gap-2 text-sm text-text-primary hover:text-accent transition-colors"
+              target="_blank"
+              rel="noreferrer"
             >
               View Project 
-              <span class="transform transition-transform group-hover/link:translate-x-1">→</span>
+              <span class="transform transition-transform group-hover:translate-x-1">→</span>
             </a>
           </div>
         </div>

@@ -2,7 +2,7 @@
 const experiences = [
   {
     role: "Software Developer",
-    company: "ZETDC",
+    company: "Zimbabwe Electricity Transmission and Distribution Company (ZETDC)",
     period: "2024 – Present",
     location: "Harare, Zimbabwe",
     description: [
@@ -37,45 +37,56 @@ const experiences = [
 <template>
   <section
     id="experience"
-    class="py-24 relative z-10"
+    class="relative z-10 py-24"
   >
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-text-primary mb-12 text-center tracking-tight">
-        Experience
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="reveal section-title text-3xl md:text-4xl font-bold text-center text-text-primary mx-auto">
+        Professional Experience
       </h2>
-      <div class="max-w-4xl mx-auto grid grid-cols-1 gap-6">
+
+      <div class="mt-16 max-w-3xl mx-auto space-y-12">
         <div
           v-for="(exp, index) in experiences"
           :key="index"
-          class="group bg-surface border border-border rounded-xl p-8 hover:border-text-secondary/30 transition-all duration-300 relative overflow-hidden"
+          class="reveal timeline-item"
+          :class="index === 0 ? '' : `reveal-delay-${Math.min(5, index)}`"
         >
-          <!-- Hover Gradient -->
-          <div class="absolute inset-0 bg-gradient-to-tr from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-          
-          <div class="flex flex-col md:flex-row md:items-start justify-between mb-6 gap-4 relative z-10">
-            <div>
-              <h3 class="text-xl font-semibold text-text-primary mb-1">
-                {{ exp.role }}
-              </h3>
-              <p class="text-text-secondary">
-                {{ exp.company }}
-              </p>
+          <div class="card p-6">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+              <div>
+                <h3 class="font-semibold text-xl text-text-primary">
+                  {{ exp.role }}
+                </h3>
+                <p class="text-accent">
+                  {{ exp.company }}
+                </p>
+              </div>
+              <span class="px-3 py-1 rounded-full text-sm font-medium bg-primary-muted text-accent">
+                {{ exp.period }}
+              </span>
             </div>
-            <span class="inline-flex items-center px-3 py-1 rounded-md bg-white/5 border border-white/5 text-xs text-text-muted font-mono">
-              {{ exp.period }}
-            </span>
+
+            <ul class="space-y-3 text-sm text-text-muted">
+              <li
+                v-for="(item, i) in exp.description"
+                :key="i"
+                class="flex items-start gap-2"
+              >
+                <svg
+                  class="flex-shrink-0 mt-1 text-accent"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="20,6 9,17 4,12" />
+                </svg>
+                {{ item }}
+              </li>
+            </ul>
           </div>
-          
-          <ul class="space-y-3 relative z-10">
-            <li
-              v-for="(item, i) in exp.description"
-              :key="i"
-              class="flex items-start gap-3 text-text-secondary text-sm leading-relaxed"
-            >
-              <span class="mt-1.5 w-1 h-1 rounded-full bg-text-muted flex-shrink-0" />
-              {{ item }}
-            </li>
-          </ul>
         </div>
       </div>
     </div>

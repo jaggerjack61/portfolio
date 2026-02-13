@@ -10,22 +10,24 @@ export default {
     },
     extend: {
       colors: {
-        background: '#020202', // Cursor-like deep black
-        surface: '#09090b', // Slightly lighter for cards
+        background: '#0a0f1a',
+        elevated: '#111827',
+        surface: '#1a2234',
         primary: {
-          DEFAULT: '#ffffff', // White for primary actions (high contrast)
-          muted: '#a1a1aa', // Zinc 400
+          DEFAULT: '#00d4aa',
+          muted: '#00d4aa33',
         },
-        border: '#27272a', // Zinc 800
+        border: '#2a3548',
         text: {
-          primary: '#fafafa', // Zinc 50
-          secondary: '#a1a1aa', // Zinc 400
-          muted: '#52525b', // Zinc 600
+          primary: '#f1f5f9',
+          secondary: '#94a3b8',
+          muted: '#64748b',
         },
-        accent: '#3b82f6', // Subtle blue for specific highlights
+        accent: '#00d4aa',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       backgroundImage: {

@@ -49,19 +49,20 @@ const certifications: Certification[] = [
 <template>
   <section
     id="certifications"
-    class="py-16 relative z-10"
+    class="relative z-10 py-24 bg-elevated"
   >
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-text-primary mb-10 text-center">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="reveal section-title text-3xl md:text-4xl font-bold text-center mx-auto text-text-primary">
         Certifications
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-16">
         <div
           v-for="(cert, index) in certifications"
           :key="index"
-          class="bg-surface rounded-xl p-6 shadow-card hover:shadow-card-hover border border-gray-100 transition-all duration-300 hover:-translate-y-1 group flex items-start gap-4"
+          class="reveal card p-4 flex items-center gap-4"
+          :class="index === 0 ? '' : `reveal-delay-${Math.min(5, index)}`"
         >
-          <div class="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors shrink-0">
+          <div class="p-3 bg-primary-muted rounded-lg shrink-0">
             <img
               :src="cert.badgeSrc"
               :alt="cert.badgeAlt"
@@ -70,14 +71,14 @@ const certifications: Certification[] = [
             >
           </div>
           <div>
-            <h3 class="text-lg font-semibold text-text-primary group-hover:text-primary transition-colors leading-tight">
+            <h3 class="text-sm font-semibold text-text-primary leading-tight">
               {{ cert.title }}
             </h3>
             <div class="flex flex-wrap gap-2 mt-3">
               <span
                 v-for="t in cert.skills"
                 :key="t"
-                class="px-2 py-1 bg-white/5 rounded text-[10px] font-medium text-text-muted border border-white/5"
+                class="px-2 py-1 bg-background rounded text-[10px] font-medium text-text-muted border border-border"
               >
                 {{ t }}
               </span>
