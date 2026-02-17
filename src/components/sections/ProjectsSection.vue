@@ -18,6 +18,14 @@ const projects: Project[] = [
     imageAlt: "SchemaField project preview"
   },
   {
+    title: "Track My Gains",
+    desc: "Cross-platform fitness tracker with themed dashboards for workouts, weight, diet, and cycles.",
+    tech: ["Expo", "React Native", "SQLite", "Firebase"],
+    link: "https://github.com/jaggerjack61/TrackMyGains/",
+    imageSrc: "images/projects/TrackMyGains.jpg",
+    imageAlt: "Track My Gains project preview"
+  },
+  {
     title: "Academic Tracker Backend",
     desc: "Comprehensive academic tracking system for managing students, grades, and subjects.",
     tech: ["Laravel", "PHP", "MySQL"],
