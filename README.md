@@ -1,4 +1,4 @@
-# Samuel Jarai — Portfolio
+# Samuel Jarai's — Portfolio
 
 Personal portfolio site built with Vue 3 + TypeScript and TailwindCSS, deployed to GitHub Pages via CI/CD.
 
