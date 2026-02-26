@@ -10,6 +10,14 @@ type Project = {
 
 const projects: Project[] = [
   {
+    title: "Database Hoarder",
+    desc: "Multi-tenant database backup automation platform with retention and replication policies.",
+    tech: ["Django", "Django REST Framework", "React"],
+    link: "https://github.com/jaggerjack61/DatabaseHoarder",
+    imageSrc: "images/projects/database-hoarder.png",
+    imageAlt: "Database Hoarder project preview"
+  },
+  {
     title: "SchemaField",
     desc: "Schema-driven form builder and data capture platform with analytics.",
     tech: ["React", "Django", "Django REST Framework"],
