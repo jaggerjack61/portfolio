@@ -10,32 +10,33 @@ export default {
     },
     extend: {
       colors: {
-        background: '#0a0f1a',
-        elevated: '#111827',
-        surface: '#1a2234',
+        background: '#050816',
+        elevated: '#081222',
+        surface: '#0b1730',
         primary: {
-          DEFAULT: '#00d4aa',
-          muted: '#00d4aa33',
+          DEFAULT: '#76f7ff',
+          muted: '#76f7ff1f',
         },
-        border: '#2a3548',
+        border: '#1c335c',
         text: {
-          primary: '#f1f5f9',
-          secondary: '#94a3b8',
-          muted: '#64748b',
+          primary: '#f5f7ff',
+          secondary: '#c3d1f0',
+          muted: '#6f86af',
         },
-        accent: '#00d4aa',
+        accent: '#76f7ff',
+        warning: '#ffb86a',
       },
       fontFamily: {
-        sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
-        display: ['Space Grotesk', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['IBM Plex Sans', 'sans-serif'],
+        display: ['Oxanium', 'sans-serif'],
+        mono: ['IBM Plex Mono', 'monospace'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #2a8af6 0deg, #a853ba 180deg, #e92a67 360deg)',
+        'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #76f7ff 0deg, #79a8ff 180deg, #ffb86a 360deg)',
       },
       boxShadow: {
-        'glow': '0 0 20px -5px rgba(255, 255, 255, 0.1)',
+        'glow': '0 0 30px -12px rgba(118, 247, 255, 0.45)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

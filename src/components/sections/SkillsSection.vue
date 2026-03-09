@@ -19,22 +19,32 @@ const cards: SkillCard[] = [
 <template>
   <section
     id="skills"
-    class="relative z-10 py-24 bg-elevated"
+    class="relative z-10 py-24"
   >
     <div class="max-w-6xl mx-auto px-6">
-      <h2 class="reveal section-title text-3xl md:text-4xl font-bold text-center text-text-primary mx-auto">
-        Technical Skills
-      </h2>
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p class="reveal section-kicker">
+            Subsystems / 04
+          </p>
+          <h2 class="reveal reveal-delay-1 section-title mt-6 text-text-primary">
+            Technical skills tuned for production-grade builds.
+          </h2>
+        </div>
+        <p class="reveal reveal-delay-2 max-w-xl text-base leading-relaxed text-text-muted lg:text-right">
+          The stack leans pragmatic: stable backends, responsive interfaces, and infrastructure tooling that supports clean deployments.
+        </p>
+      </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
+      <div class="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         <div
           v-for="(card, idx) in cards"
           :key="card.title"
           class="reveal card p-6"
           :class="idx === 0 ? '' : `reveal-delay-${Math.min(5, idx)}`"
         >
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-primary-muted text-accent">
+          <div class="mb-6 flex items-center gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-primary-muted text-accent">
               <svg
                 v-if="card.icon === 'code'"
                 width="20"
@@ -127,9 +137,14 @@ const cards: SkillCard[] = [
                 <path d="m4.22 19.78 4.24-4.24m7.08-7.08 4.24-4.24" />
               </svg>
             </div>
-            <h3 class="font-semibold text-lg text-text-primary">
+            <div>
+              <p class="hud-label">
+                Module
+              </p>
+              <h3 class="mt-2 font-display text-xl uppercase tracking-[0.08em] text-text-primary">
               {{ card.title }}
-            </h3>
+              </h3>
+            </div>
           </div>
 
           <div
@@ -139,10 +154,10 @@ const cards: SkillCard[] = [
             <div
               v-for="item in card.items"
               :key="item"
-              class="flex items-center justify-between text-sm"
+              class="flex items-center justify-between rounded-2xl border border-border bg-background/30 px-4 py-3 text-sm"
             >
               <span class="text-text-secondary">{{ item }}</span>
-              <span class="text-accent font-medium">{{ card.title === 'Languages' ? 'Advanced' : '' }}</span>
+              <span class="font-mono text-xs uppercase tracking-[0.24em] text-accent">{{ card.title === 'Languages' ? 'Advanced' : 'Active' }}</span>
             </div>
           </div>
 
@@ -153,7 +168,7 @@ const cards: SkillCard[] = [
             <span
               v-for="t in card.tags"
               :key="t"
-              class="px-3 py-1 rounded text-sm bg-background border border-border text-text-secondary"
+              class="rounded-full border border-border bg-background/35 px-3 py-2 text-sm text-text-secondary"
             >
               {{ t }}
             </span>

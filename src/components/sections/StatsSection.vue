@@ -63,21 +63,40 @@ onMounted(() => {
 <template>
   <section
     id="stats"
-    class="relative z-10 py-16 border-y border-border bg-elevated"
+    class="relative z-10 py-10"
   >
     <div class="max-w-6xl mx-auto px-6">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        <div
-          v-for="(stat, idx) in stats"
-          :key="stat.label"
-          class="reveal"
-          :class="idx === 0 ? '' : `reveal-delay-${idx}`"
-        >
-          <div class="text-4xl md:text-5xl font-bold bg-gradient-to-br from-accent to-indigo-400 bg-clip-text text-transparent">
-            {{ displayValues[idx] }}{{ stat.suffix ?? '' }}
+      <div class="section-shell px-6 py-8 md:px-8 md:py-9">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="reveal section-kicker">
+              Telemetry / 00
+            </p>
+            <h2 class="reveal reveal-delay-1 mt-5 font-display text-3xl uppercase tracking-[0.08em] text-text-primary md:text-4xl">
+              Active mission metrics
+            </h2>
           </div>
-          <div class="mt-2 text-text-muted">
-            {{ stat.label }}
+          <p class="reveal reveal-delay-2 max-w-xl text-sm leading-relaxed text-text-muted md:text-right">
+            A quick scan of experience, credentials, and delivery volume gathered from recent production cycles.
+          </p>
+        </div>
+
+        <div class="mt-8 grid gap-4 md:grid-cols-4">
+          <div
+            v-for="(stat, idx) in stats"
+            :key="stat.label"
+            class="reveal metric-card"
+            :class="idx === 0 ? '' : `reveal-delay-${Math.min(5, idx)}`"
+          >
+            <p class="hud-label">
+              {{ stat.label }}
+            </p>
+            <div class="mt-4 flex items-end gap-1">
+              <span class="metric-value">{{ displayValues[idx] }}</span>
+              <span class="pb-2 font-mono text-sm uppercase tracking-[0.24em] text-accent">
+                {{ stat.suffix ?? '' }}
+              </span>
+            </div>
           </div>
         </div>
       </div>

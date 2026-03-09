@@ -40,53 +40,64 @@ const experiences = [
     class="relative z-10 py-24"
   >
     <div class="max-w-6xl mx-auto px-6">
-      <h2 class="reveal section-title text-3xl md:text-4xl font-bold text-center text-text-primary mx-auto">
-        Professional Experience
-      </h2>
+      <div class="max-w-4xl">
+        <p class="reveal section-kicker">
+          Flight Log / 03
+        </p>
+        <div class="reveal reveal-delay-1 mt-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <h2 class="section-title text-text-primary">
+            Experience across infrastructure, platforms, and product delivery.
+          </h2>
+          <p class="max-w-xl text-base leading-relaxed text-text-muted lg:text-right">
+            The work spans production web systems, cloud-hosted business platforms, and customer-facing digital products where reliability matters.
+          </p>
+        </div>
+      </div>
 
-      <div class="mt-16 max-w-3xl mx-auto space-y-12">
+      <div class="mt-14 max-w-4xl space-y-8">
         <div
           v-for="(exp, index) in experiences"
           :key="index"
           class="reveal timeline-item"
           :class="index === 0 ? '' : `reveal-delay-${Math.min(5, index)}`"
         >
-          <div class="card p-6">
-            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
-              <div>
-                <h3 class="font-semibold text-xl text-text-primary">
+          <article class="section-shell overflow-hidden p-0">
+            <div class="grid gap-0 md:grid-cols-[0.34fr,0.66fr]">
+              <div class="border-b border-border bg-background/35 p-6 md:border-b-0 md:border-r">
+                <p class="hud-label">
+                  Mission {{ index + 1 }}
+                </p>
+                <h3 class="mt-4 font-display text-2xl uppercase tracking-[0.08em] text-text-primary">
                   {{ exp.role }}
                 </h3>
-                <p class="text-accent">
+                <p class="mt-3 text-base font-semibold leading-relaxed text-accent">
                   {{ exp.company }}
                 </p>
+                <p class="mt-5 font-mono text-xs uppercase tracking-[0.24em] text-text-muted">
+                  {{ exp.period }}
+                </p>
+                <p class="mt-2 text-sm text-text-muted">
+                  {{ exp.location }}
+                </p>
               </div>
-              <span class="px-3 py-1 rounded-full text-sm font-medium bg-primary-muted text-accent">
-                {{ exp.period }}
-              </span>
-            </div>
 
-            <ul class="space-y-3 text-sm text-text-muted">
-              <li
-                v-for="(item, i) in exp.description"
-                :key="i"
-                class="flex items-start gap-2"
-              >
-                <svg
-                  class="flex-shrink-0 mt-1 text-accent"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <polyline points="20,6 9,17 4,12" />
-                </svg>
-                {{ item }}
-              </li>
-            </ul>
-          </div>
+              <div class="p-6">
+                <p class="hud-label">
+                  Key Contributions
+                </p>
+                <ul class="mt-5 space-y-4 text-sm leading-relaxed text-text-secondary">
+                  <li
+                    v-for="(item, i) in exp.description"
+                    :key="i"
+                    class="flex items-start gap-3"
+                  >
+                    <span class="mt-1 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-accent shadow-[0_0_18px_rgba(118,247,255,0.9)]" />
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </div>

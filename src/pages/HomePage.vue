@@ -29,8 +29,12 @@ const createParticles = () => {
     particle.className = 'particle'
     particle.style.left = `${Math.random() * 100}%`
     particle.style.top = `${Math.random() * 100}%`
-    particle.style.animationDelay = `${Math.random() * 5}s`
-    particle.style.animation = `float ${5 + Math.random() * 5}s ease-in-out infinite`
+    particle.style.width = `${1.5 + Math.random() * 3}px`
+    particle.style.height = particle.style.width
+    particle.style.opacity = `${0.25 + Math.random() * 0.55}`
+    particle.style.animationDelay = `${Math.random() * 6}s`
+    particle.style.setProperty('--drift-x', `${(Math.random() - 0.5) * 42}px`)
+    particle.style.setProperty('--drift-duration', `${8 + Math.random() * 8}s`)
     particlesContainer.appendChild(particle)
   }
 }
@@ -65,9 +69,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="relative w-full bg-background text-text-primary min-h-screen">
+  <div class="app-shell relative w-full min-h-screen bg-background text-text-primary">
     <div
       class="grid-bg"
+      aria-hidden="true"
+    />
+    <div
+      class="starfield"
       aria-hidden="true"
     />
     <div
@@ -79,6 +87,14 @@ onBeforeUnmount(() => {
       aria-hidden="true"
     />
     <div
+      class="signal-ring signal-ring-1"
+      aria-hidden="true"
+    />
+    <div
+      class="signal-ring signal-ring-2"
+      aria-hidden="true"
+    />
+    <div
       id="particles"
       aria-hidden="true"
       class="absolute inset-0 z-0 pointer-events-none"
@@ -86,7 +102,7 @@ onBeforeUnmount(() => {
 
     <Navigation />
 
-    <main class="relative z-10 pt-16">
+    <main class="relative z-10 overflow-hidden pt-20 md:pt-24">
       <HeroSection />
       <StatsSection />
       <div class="max-w-6xl mx-auto px-6 space-y-0">
