@@ -116,6 +116,7 @@ const projects: Project[] = [
                 :alt="project.imageAlt"
                 class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
+                decoding="async"
               >
             </div>
             <div class="absolute inset-0 bg-gradient-to-t from-[#03050d] via-[#03050d]/25 to-transparent" />

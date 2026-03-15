@@ -58,7 +58,7 @@ onMounted(() => {
     {
       root: null,
       rootMargin: `-${Math.ceil(navHeight + 8)}px 0px -55% 0px`,
-      threshold: [0, 0.1, 0.25, 0.4, 0.6, 0.75, 0.9, 1],
+      threshold: [0, 0.25, 0.5, 0.75],
     },
   )
 

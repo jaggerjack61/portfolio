@@ -87,6 +87,7 @@ const certifications: Certification[] = [
                 :alt="cert.badgeAlt"
                 class="block h-14 w-14 object-contain"
                 loading="lazy"
+                decoding="async"
               >
             </div>
             <div>
