@@ -56,7 +56,7 @@ const certifications: Certification[] = [
 <template>
   <section
     id="certifications"
-    class="relative z-10 py-24"
+    class="relative z-10 py-16 md:py-24"
   >
     <div class="max-w-6xl mx-auto px-6">
       <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">

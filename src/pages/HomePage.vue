@@ -105,7 +105,7 @@ onBeforeUnmount(() => {
     <main class="relative z-10 overflow-hidden pt-20 md:pt-24">
       <HeroSection />
       <StatsSection />
-      <div class="max-w-6xl mx-auto px-6 space-y-0">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-0">
         <AboutSection />
         <ExperienceSection />
         <SkillsSection />

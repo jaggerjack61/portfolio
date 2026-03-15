@@ -37,7 +37,7 @@ const experiences = [
 <template>
   <section
     id="experience"
-    class="relative z-10 py-24"
+    class="relative z-10 py-16 md:py-24"
   >
     <div class="max-w-6xl mx-auto px-6">
       <div class="max-w-4xl">

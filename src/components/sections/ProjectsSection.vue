@@ -63,6 +63,15 @@ const projects: Project[] = [
     link: "https://github.com/jaggerjack61/NSSA_Paynow.git",
     imageSrc: "images/projects/nssa-paynow-bot.jpg",
     imageAlt: "NSSA Paynow Bot project preview"
+  },
+  {
+    title: "Laravel ERD",
+    desc: "VS Code extension that parses Laravel migrations and Eloquent models to render interactive ER diagrams with inline editing support.",
+    focus: "Developer Tools",
+    tech: ["TypeScript", "VS Code API", "Laravel"],
+    link: "https://github.com/jaggerjack61/LaravelERD",
+    imageSrc: "images/projects/laravel-erd.png",
+    imageAlt: "Laravel ERD project preview"
   }
 ]
 </script>
@@ -70,7 +79,7 @@ const projects: Project[] = [
 <template>
   <section
     id="projects"
-    class="relative z-10 py-24"
+    class="relative z-10 py-16 md:py-24"
   >
     <div class="max-w-6xl mx-auto px-6">
       <div class="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">

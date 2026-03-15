@@ -65,8 +65,8 @@ onMounted(() => {
     id="stats"
     class="relative z-10 py-10"
   >
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="section-shell px-6 py-8 md:px-8 md:py-9">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="section-shell px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-9">
         <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p class="reveal section-kicker">
@@ -81,7 +81,7 @@ onMounted(() => {
           </p>
         </div>
 
-        <div class="mt-8 grid gap-4 md:grid-cols-4">
+        <div class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
           <div
             v-for="(stat, idx) in stats"
             :key="stat.label"

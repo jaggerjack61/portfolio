@@ -47,9 +47,9 @@ const scrollToProjects = () => {
 <template>
   <section
     id="hero"
-    class="relative z-10 flex min-h-screen items-center overflow-hidden pb-16 pt-28 md:pt-32"
+    class="relative z-10 flex min-h-[calc(100dvh-5rem)] items-center overflow-hidden pb-16 pt-28 sm:min-h-screen md:pt-32"
   >
-    <div class="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 xl:grid-cols-[1.08fr,0.92fr]">
+    <div class="mx-auto grid max-w-6xl items-center gap-12 px-4 py-8 sm:px-6 sm:py-16 xl:grid-cols-[1.08fr,0.92fr]">
       <div>
         <div class="reveal flex flex-wrap items-center gap-4">
           <span class="section-kicker">Cosmic Systems Engineer</span>
@@ -58,7 +58,7 @@ const scrollToProjects = () => {
 
         <div class="reveal reveal-delay-1 mt-8">
           <p class="hud-label">Command Node 01</p>
-          <h1 class="mt-4 font-display text-5xl uppercase leading-[0.92] tracking-[0.08em] text-text-primary md:text-7xl">
+          <h1 class="mt-4 font-display text-4xl uppercase leading-[0.92] tracking-[0.08em] text-text-primary sm:text-5xl md:text-7xl">
             Engineering solutions for the future today.
           </h1>
           <p class="mt-6 max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
@@ -139,7 +139,7 @@ const scrollToProjects = () => {
             </span>
           </div>
           <div class="terminal-body text-text-secondary">
-            <div class="flex items-center justify-between border-b border-border/60 pb-4 text-[0.72rem] uppercase tracking-[0.26em] text-text-muted">
+            <div class="flex flex-col gap-2 border-b border-border/60 pb-4 text-[0.72rem] uppercase tracking-[0.26em] text-text-muted sm:flex-row sm:items-center sm:justify-between">
               <span>session: command deck</span>
               <span>uptime: 06+ years</span>
             </div>

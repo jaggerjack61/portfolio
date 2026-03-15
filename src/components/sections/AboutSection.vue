@@ -16,7 +16,7 @@ const awards = [
 <template>
   <section
     id="about"
-    class="relative z-10 py-24"
+    class="relative z-10 py-16 md:py-24"
   >
     <div class="max-w-6xl mx-auto px-6">
       <div class="grid gap-8 xl:grid-cols-[0.92fr,1.08fr] xl:items-start">
@@ -48,7 +48,7 @@ const awards = [
         </div>
 
         <div class="reveal reveal-delay-2">
-          <div class="section-shell p-8">
+          <div class="section-shell p-5 sm:p-8">
             <div class="grid gap-8 md:grid-cols-[0.9fr,1.1fr]">
               <div>
                 <p class="hud-label">
