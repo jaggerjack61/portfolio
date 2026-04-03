@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const abstractImage = 'images/projects/abstract-geo.jpeg'
+
 const focusAreas = [
   'End-to-end product ownership',
   'Scalable APIs and workflow automation',
@@ -20,8 +22,14 @@ const awards = [
   >
     <div
       class="absolute right-0 top-0 bottom-0 w-1/3 opacity-[0.07] z-0"
-      style="background-image: url('/images/generated/abstract-geo.jpeg'); background-size: cover; background-position: center;"
-    />
+    >
+      <img
+        :src="abstractImage"
+        alt=""
+        class="w-full h-full object-cover"
+        aria-hidden="true"
+      >
+    </div>
 
     <div class="mx-auto max-w-7xl px-6 relative z-10">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">

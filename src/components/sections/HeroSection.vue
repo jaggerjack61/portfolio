@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const heroImage = 'images/projects/hero-datacenter.jpeg'
+
 const scrollTo = (href: string) => {
   const section = document.getElementById(href)
   if (section) {
@@ -13,10 +15,15 @@ const scrollTo = (href: string) => {
     id="hero"
     class="relative z-10 min-h-[100dvh] flex items-end pb-20 pt-32 overflow-hidden"
   >
-    <div
-      class="absolute inset-0 z-0"
-      style="background-image: url('/images/generated/hero-datacenter.jpeg'); background-size: cover; background-position: center 30%; filter: brightness(0.3) saturate(0.7);"
-    />
+    <div class="absolute inset-0 z-0">
+      <img
+        :src="heroImage"
+        alt=""
+        class="w-full h-full object-cover"
+        style="filter: brightness(0.3) saturate(0.7);"
+        aria-hidden="true"
+      >
+    </div>
 
     <div
       class="absolute inset-0 z-[1]"
