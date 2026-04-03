@@ -2,121 +2,113 @@
 const focusAreas = [
   'End-to-end product ownership',
   'Scalable APIs and workflow automation',
-  'Cloud infrastructure and deployment strategy',
-  'Interfaces that feel precise and modern',
+  'Cloud infrastructure and deployment',
+  'Precise, modern interfaces',
 ]
 
 const awards = [
-  'Presidential Innovation Award',
-  'ZESA Risk Awards - Innovation in ICT',
-  'HIT Book Prize - Best Capstone Design',
+  { title: 'Presidential Innovation Award', year: '2023' },
+  { title: 'ZESA Risk Awards — Innovation in ICT', year: '2024' },
+  { title: 'HIT Book Prize — Best Capstone Design', year: '2023' },
 ]
 </script>
 
 <template>
   <section
     id="about"
-    class="relative z-10 py-16 md:py-24"
+    class="relative z-10 py-24 md:py-40 overflow-hidden"
   >
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="grid gap-8 xl:grid-cols-[0.92fr,1.08fr] xl:items-start">
-        <div>
-          <div class="reveal">
-            <p class="section-kicker">
-              Dossier / 02
-            </p>
-            <h2 class="section-title mt-6 text-text-primary">
-              Engineering for signal, scale, and reliability.
-            </h2>
-            <p class="mt-6 text-lg leading-relaxed text-text-secondary">
-              Full-stack software engineer with 6+ years of experience designing, building, and deploying scalable web applications. Strong backend expertise in Python and PHP is matched with modern frontend execution in Vue and React.
-            </p>
-            <p class="mt-4 text-lg leading-relaxed text-text-muted">
-              I work comfortably across architecture, APIs, infrastructure, and interface delivery, with production exposure in AWS and Oracle Cloud and a track record of shipping systems that need to be dependable under real operational pressure.
+    <div
+      class="absolute right-0 top-0 bottom-0 w-1/3 opacity-[0.07] z-0"
+      style="background-image: url('/images/generated/abstract-geo.jpeg'); background-size: cover; background-position: center;"
+    />
+
+    <div class="mx-auto max-w-7xl px-6 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-7">
+          <span class="reveal section-number">01 / About</span>
+
+          <div class="reveal reveal-delay-1">
+            <p class="display-heading text-4xl md:text-5xl lg:text-6xl leading-tight">
+              Six years of building systems that don't break.
             </p>
           </div>
 
-          <div class="reveal reveal-delay-2 mt-8 grid gap-3 sm:grid-cols-2">
-            <div
-              v-for="item in focusAreas"
-              :key="item"
-              class="data-chip"
-            >
-              {{ item }}
+          <div class="mt-12 space-y-8">
+            <div class="reveal reveal-delay-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <p class="body-text">
+                  Full-stack engineer with deep backend expertise in Python and PHP, matched with modern frontend delivery in Vue and React. I work across the entire stack — from database schema to deployment pipeline.
+                </p>
+              </div>
+              <div>
+                <p class="body-text">
+                  Production experience across AWS and Oracle Cloud. I've shipped energy trading platforms, ERP modules for municipal governments, WhatsApp commerce bots, and developer tools used by Laravel teams.
+                </p>
+              </div>
+            </div>
+
+            <div class="reveal reveal-delay-3">
+              <p class="label-mono mb-4">
+                What I Focus On
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div
+                  v-for="area in focusAreas"
+                  :key="area"
+                  class="flex items-center gap-3 p-3 border"
+                  style="border-color: var(--border-subtle); background: var(--bg-secondary);"
+                >
+                  <div
+                    class="w-1.5 h-1.5 rounded-full shrink-0"
+                    style="background: var(--accent-warm);"
+                  />
+                  <span
+                    class="text-sm"
+                    style="color: var(--text-secondary);"
+                  >{{ area }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="reveal reveal-delay-2">
-          <div class="section-shell p-5 sm:p-8">
-            <div class="grid gap-8 md:grid-cols-[0.9fr,1.1fr]">
-              <div>
-                <p class="hud-label">
-                  Education
-                </p>
-                <div class="mt-6 flex items-start gap-4 rounded-[1.25rem] border border-border bg-background/30 p-5">
-                  <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-border bg-primary-muted text-accent">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                      <path d="M6 12v5c3 3 9 3 12 0v-5" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="font-display text-xl uppercase tracking-[0.08em] text-text-primary">
-                      B.Tech
-                    </div>
-                    <div class="mt-2 text-base font-semibold text-accent">
-                      Software Engineering
-                    </div>
-                    <div class="mt-2 text-sm leading-relaxed text-text-muted">
-                      Harare Institute of Technology, 2023
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <p class="hud-label">
-                  Awards Log
-                </p>
-                <div class="mt-6 space-y-4">
-                  <div
-                    v-for="award in awards"
-                    :key="award"
-                    class="rounded-[1.25rem] border border-border bg-background/30 p-5"
-                  >
-                    <div class="flex items-center gap-3 text-accent">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle
-                          cx="12"
-                          cy="8"
-                          r="6"
-                        />
-                        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
-                      </svg>
-                      <span class="font-mono text-xs uppercase tracking-[0.24em] text-text-muted">
-                        Recognition
-                      </span>
-                    </div>
-                    <p class="mt-3 text-base font-semibold leading-relaxed text-text-secondary">
-                      {{ award }}
-                    </p>
-                  </div>
-                </div>
-              </div>
+        <div class="lg:col-span-5 lg:pt-8">
+          <span class="reveal section-number">Recognition</span>
+
+          <div class="reveal reveal-delay-1">
+            <div
+              v-for="award in awards"
+              :key="award.title"
+              class="award-row"
+            >
+              <span
+                class="text-sm"
+                style="color: var(--text-primary);"
+              >{{ award.title }}</span>
+              <span class="label-mono shrink-0">{{ award.year }}</span>
+            </div>
+            <div class="award-row">
+              <span
+                class="text-sm"
+                style="color: var(--text-primary);"
+              >Member, Computer Society of Zimbabwe</span>
+              <span class="label-mono shrink-0">Active</span>
+            </div>
+          </div>
+
+          <div class="reveal reveal-delay-2 mt-12">
+            <p class="label-mono mb-4">
+              Certifications
+            </p>
+            <div class="flex flex-col gap-2">
+              <span
+                v-for="cert in ['AWS Solutions Architect Associate', 'HashiCorp Terraform Associate', 'OCI Developer Professional', 'OCI Foundations Associate', 'OCI Data Platform Foundations']"
+                :key="cert"
+                class="skill-tag"
+              >
+                {{ cert }}
+              </span>
             </div>
           </div>
         </div>
