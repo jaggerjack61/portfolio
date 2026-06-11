@@ -22,6 +22,14 @@ const projects: Project[] = [
     featured: true
   },
   {
+    title: "Harness",
+    desc: "Lightweight AI agent framework that connects to any OpenAI-compatible chat model with built-in tools for reading, writing, editing files, and executing shell commands. Features streaming responses, markdown rendering, chain-of-thought reasoning, and real-time token tracking.",
+    tech: ["Python", "OpenAI API", "CLI"],
+    link: "https://github.com/jaggerjack61/Harness.git",
+    imageSrc: "images/projects/Harness.png",
+    imageAlt: "Harness AI agent framework"
+  },
+  {
     title: "Laravel ERD",
     desc: "VS Code extension that parses Laravel migrations and Eloquent models to render interactive ER diagrams with inline editing support. Built for Laravel developers who need to visualize database schemas without leaving their editor.",
     tech: ["TypeScript", "VS Code API", "Laravel"],

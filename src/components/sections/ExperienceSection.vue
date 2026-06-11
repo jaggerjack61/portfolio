@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const experiences = [
   {
-    role: "Software Developer",
+    role: "Senior Software Engineer",
     company: "ZETDC — Zimbabwe Electricity Transmission and Distribution Company",
     period: "2024 — Present",
     description: [
