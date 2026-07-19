@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const heroImage = 'images/projects/hero-datacenter.jpeg'
+const profileImage = 'images/profile_pic.png'
+const contextImage = 'images/projects/hero-datacenter.jpeg'
 
 const scrollTo = (href: string) => {
   const section = document.getElementById(href)
@@ -13,57 +14,39 @@ const scrollTo = (href: string) => {
 <template>
   <section
     id="hero"
-    class="relative z-10 min-h-[100dvh] flex items-end pb-20 pt-32 overflow-hidden"
+    class="relative min-h-[100dvh] overflow-hidden pb-16 pt-32 md:pb-24 md:pt-40"
   >
-    <div class="absolute inset-0 z-0">
-      <img
-        :src="heroImage"
-        alt=""
-        class="w-full h-full object-cover"
-        style="filter: brightness(0.3) saturate(0.7);"
-        aria-hidden="true"
-      >
-    </div>
+    <div class="pointer-events-none absolute -right-32 top-16 h-[32rem] w-[32rem] rounded-full bg-[#e8edff] blur-3xl" />
+    <div class="pointer-events-none absolute -left-28 bottom-0 h-72 w-72 rounded-full bg-[#eef7f0] blur-3xl" />
 
-    <div
-      class="absolute inset-0 z-[1]"
-      style="background: linear-gradient(to top, rgba(12,12,14,1) 0%, rgba(12,12,14,0.65) 35%, rgba(12,12,14,0.15) 70%, transparent 100%);"
-    />
+    <div class="section-shell relative z-10">
+      <div class="grid min-h-[calc(100dvh-14rem)] grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-7">
+          <span class="reveal eyebrow">AI Engineer · Econet Wireless</span>
 
-    <div class="relative z-10 mx-auto max-w-7xl px-6 w-full">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-        <div class="lg:col-span-9">
-          <span
-            class="reveal label-mono"
-            style="color: var(--accent-warm);"
-          >Full-Stack Engineer · Harare, Zimbabwe</span>
-
-          <h1 class="reveal reveal-delay-1 mt-6 display-heading text-7xl sm:text-8xl md:text-[9rem] lg:text-[11rem] leading-[0.9] tracking-tight">
-            Samuel<br>
-            <em
-              class="italic not-italic opacity-60"
-              style="color: var(--text-secondary);"
-            >Jarai.</em>
+          <h1 class="reveal reveal-delay-1 mt-7 max-w-4xl text-[clamp(3.6rem,8.5vw,7.8rem)] font-semibold leading-[0.91] tracking-[-0.065em] text-primary">
+            Building useful
+            <span class="text-accent">intelligence.</span>
           </h1>
 
-          <p class="reveal reveal-delay-2 mt-8 body-text max-w-md text-base md:text-lg">
-            Building cloud-backed systems for infrastructure, commerce, and public platforms — from architecture to polished delivery.
+          <p class="reveal reveal-delay-2 mt-8 max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
+            I'm Samuel Jarai, an AI and full-stack engineer in Harare. I build cloud-backed systems for infrastructure, commerce, and public platforms — from architecture to polished delivery.
           </p>
 
-          <div class="reveal reveal-delay-3 mt-10 flex flex-wrap items-center gap-4">
+          <div class="reveal reveal-delay-3 mt-9 flex flex-wrap items-center gap-3">
             <button
               type="button"
               class="btn-primary"
               @click="scrollTo('contact')"
             >
-              Get In Touch
+              Get in touch
               <svg
                 width="16"
                 height="16"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="1.5"
+                stroke-width="1.8"
               >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
@@ -73,75 +56,88 @@ const scrollTo = (href: string) => {
               class="btn-ghost"
               @click="scrollTo('projects')"
             >
-              View Projects
+              Explore my work
             </button>
+          </div>
+
+          <div class="reveal reveal-delay-4 mt-12 flex flex-wrap gap-x-10 gap-y-5 border-t border-border-subtle pt-7">
+            <div>
+              <p class="text-2xl font-semibold tracking-tight text-primary">
+                6+
+              </p>
+              <p class="mt-1 text-xs text-text-muted">
+                Years building
+              </p>
+            </div>
+            <div>
+              <p class="text-2xl font-semibold tracking-tight text-primary">
+                15+
+              </p>
+              <p class="mt-1 text-xs text-text-muted">
+                Projects delivered
+              </p>
+            </div>
+            <div>
+              <p class="text-2xl font-semibold tracking-tight text-primary">
+                5
+              </p>
+              <p class="mt-1 text-xs text-text-muted">
+                Cloud certifications
+              </p>
+            </div>
           </div>
         </div>
 
-        <div class="lg:col-span-3 lg:pb-2">
-          <div class="reveal reveal-delay-2 space-y-6">
-            <div>
-              <p
-                class="label-mono mb-3"
-                style="color: var(--accent-warm);"
-              >
-                Stack
-              </p>
-              <div class="flex flex-wrap gap-2">
-                <span
-                  v-for="tech in ['Django', 'Laravel', 'Vue', 'React', 'Terraform', 'AWS', 'OCI']"
-                  :key="tech"
-                  class="skill-tag"
+        <div class="relative lg:col-span-5">
+          <div class="reveal reveal-delay-2 relative mx-auto max-w-[31rem]">
+            <div class="soft-card relative overflow-hidden p-3 md:p-4">
+              <div class="relative min-h-[29rem] overflow-hidden rounded-[1.15rem] bg-[#dde5fb] md:min-h-[34rem]">
+                <img
+                  :src="contextImage"
+                  alt="Modern data centre infrastructure"
+                  class="absolute inset-0 h-full w-full object-cover opacity-90"
                 >
-                  {{ tech }}
-                </span>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#17213b]/75 via-[#3659e3]/5 to-white/5" />
+                <div class="absolute inset-x-5 bottom-5 rounded-2xl border border-white/40 bg-white/90 p-4 shadow-xl backdrop-blur-md">
+                  <div class="flex items-center gap-3">
+                    <img
+                      :src="profileImage"
+                      alt="Samuel Jarai"
+                      class="h-14 w-14 rounded-xl object-cover ring-2 ring-white"
+                    >
+                    <div>
+                      <p class="font-semibold tracking-tight text-primary">
+                        Samuel Jarai
+                      </p>
+                      <p class="mt-0.5 text-xs text-text-secondary">
+                        AI Engineer at Econet Wireless
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="divider" />
-
-            <div>
-              <p
-                class="label-mono mb-2"
-                style="color: var(--accent-warm);"
-              >
-                Current
+            <div class="absolute -left-4 top-8 rounded-2xl border border-border-subtle bg-white px-4 py-3 shadow-lg md:-left-10">
+              <p class="label-mono text-[0.58rem]">
+                Current focus
               </p>
-              <p
-                class="text-sm"
-                style="color: var(--text-secondary);"
-              >
-                Senior Software Engineer at ZETDC — building production systems for energy trading.
+              <p class="mt-1 text-sm font-medium text-primary">
+                AI · Cloud · Product
               </p>
             </div>
 
-            <div class="divider" />
-
-            <div>
-              <p
-                class="label-mono mb-2"
-                style="color: var(--accent-warm);"
-              >
-                Education
-              </p>
-              <p
-                class="text-sm"
-                style="color: var(--text-secondary);"
-              >
-                B.Tech Software Engineering<br>
-                Harare Institute of Technology, 2023
-              </p>
+            <div class="absolute -right-3 top-24 rounded-2xl border border-border-subtle bg-white p-3 shadow-lg md:-right-8">
+              <div class="flex items-center gap-2">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                </span>
+                <span class="text-xs font-medium text-primary">Open to collaborate</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="reveal reveal-delay-4 mt-16 flex items-center gap-6">
-        <div
-          class="h-px w-8"
-          style="background: var(--accent-warm);"
-        />
-        <span class="label-mono">6+ Years · 15+ Projects Delivered</span>
       </div>
     </div>
   </section>

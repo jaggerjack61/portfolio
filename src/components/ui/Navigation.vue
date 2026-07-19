@@ -10,12 +10,15 @@ const links = [
 
 const activeSectionId = ref('')
 const mobileOpen = ref(false)
+const isScrolled = ref(false)
 
 let observer: IntersectionObserver | null = null
 const intersectionRatios = new Map<string, number>()
 
-const updateActiveSection = () => {
-  if (window.scrollY < 60) {
+const updateNavigation = () => {
+  isScrolled.value = window.scrollY > 12
+
+  if (window.scrollY < 80) {
     activeSectionId.value = ''
     return
   }
@@ -31,45 +34,6 @@ const updateActiveSection = () => {
   if (bestId) activeSectionId.value = bestId
 }
 
-const initCursor = () => {
-  if (window.matchMedia('(max-width: 768px)').matches) return
-
-  const dot = document.querySelector('.cursor-dot') as HTMLElement
-  const ring = document.querySelector('.cursor-ring') as HTMLElement
-  if (!dot || !ring) return
-
-  let ringX = 0, ringY = 0
-  let dotX = 0, dotY = 0
-
-  document.addEventListener('mousemove', (e) => {
-    dotX = e.clientX
-    dotY = e.clientY
-    dot.style.left = `${dotX}px`
-    dot.style.top = `${dotY}px`
-  })
-
-  const animateRing = () => {
-    ringX += (dotX - ringX) * 0.12
-    ringY += (dotY - ringY) * 0.12
-    ring.style.left = `${ringX}px`
-    ring.style.top = `${ringY}px`
-    requestAnimationFrame(animateRing)
-  }
-  requestAnimationFrame(animateRing)
-
-  const addHoverClass = () => {
-    ring.classList.add('hovering')
-  }
-  const removeHoverClass = () => {
-    ring.classList.remove('hovering')
-  }
-
-  document.querySelectorAll('a, button, [role="button"]').forEach((el) => {
-    el.addEventListener('mouseenter', addHoverClass)
-    el.addEventListener('mouseleave', removeHoverClass)
-  })
-}
-
 onMounted(() => {
   observer = new IntersectionObserver(
     (entries) => {
@@ -77,12 +41,12 @@ onMounted(() => {
         const id = (entry.target as HTMLElement).id
         intersectionRatios.set(id, entry.isIntersecting ? entry.intersectionRatio : 0)
       }
-      updateActiveSection()
+      updateNavigation()
     },
     {
       root: null,
-      rootMargin: `-80px 0px -60% 0px`,
-      threshold: [0, 0.25, 0.5],
+      rootMargin: '-80px 0px -60% 0px',
+      threshold: [0, 0.2, 0.5],
     },
   )
 
@@ -91,14 +55,12 @@ onMounted(() => {
     if (sectionEl) observer.observe(sectionEl)
   }
 
-  window.addEventListener('scroll', updateActiveSection, { passive: true })
-  updateActiveSection()
-
-  setTimeout(initCursor, 100)
+  window.addEventListener('scroll', updateNavigation, { passive: true })
+  updateNavigation()
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', updateActiveSection)
+  window.removeEventListener('scroll', updateNavigation)
   observer?.disconnect()
   observer = null
   intersectionRatios.clear()
@@ -115,18 +77,25 @@ const scrollTo = (href: string) => {
 </script>
 
 <template>
-  <nav class="fixed inset-x-0 top-0 z-50 bg-bg/90 backdrop-blur-md">
-    <div class="mx-auto max-w-6xl px-6 py-5">
+  <nav class="fixed inset-x-0 top-0 z-50 px-4 pt-4 md:px-6">
+    <div
+      class="mx-auto max-w-6xl rounded-full border px-4 py-3 transition-all duration-300 md:px-5"
+      :class="isScrolled
+        ? 'border-border-subtle bg-white/95 shadow-[0_10px_35px_rgba(24,32,52,0.08)] backdrop-blur-xl'
+        : 'border-transparent bg-white/70 backdrop-blur-md'"
+    >
       <div class="flex items-center justify-between">
         <button
           type="button"
-          class="flex items-center gap-3 group"
+          class="flex items-center gap-3"
+          aria-label="Back to the top"
           @click="scrollTo('hero')"
         >
-          <span class="font-display text-xl tracking-tight text-primary">Samuel Jarai</span>
+          <span class="grid h-9 w-9 place-items-center rounded-full bg-accent text-sm font-semibold text-white">SJ</span>
+          <span class="hidden text-sm font-semibold tracking-tight text-primary sm:inline">Samuel Jarai</span>
         </button>
 
-        <div class="hidden md:flex items-center gap-8">
+        <div class="hidden items-center gap-7 md:flex">
           <button
             v-for="link in links"
             :key="link.name"
@@ -138,28 +107,33 @@ const scrollTo = (href: string) => {
           </button>
         </div>
 
-        <div class="hidden md:block">
-          <span class="label-mono">Harare, Zimbabwe</span>
-        </div>
+        <button
+          type="button"
+          class="hidden items-center gap-2 rounded-full border border-border-subtle bg-white px-4 py-2 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent md:inline-flex"
+          @click="scrollTo('contact')"
+        >
+          <span class="h-2 w-2 rounded-full bg-emerald-500" />
+          Let's talk
+        </button>
 
         <button
           type="button"
-          class="md:hidden inline-flex items-center justify-center w-10 h-10"
+          class="inline-grid h-9 w-9 place-items-center rounded-full border border-border-subtle bg-white text-primary md:hidden"
           :aria-expanded="mobileOpen"
           aria-label="Toggle menu"
           @click="mobileOpen = !mobileOpen"
         >
           <svg
-            width="20"
-            height="20"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="1.5"
+            stroke-width="1.8"
           >
             <path
               v-if="!mobileOpen"
-              d="M3 12h18M3 6h18M3 18h18"
+              d="M4 8h16M4 16h16"
             />
             <path
               v-else
@@ -172,22 +146,22 @@ const scrollTo = (href: string) => {
 
     <div
       v-if="mobileOpen"
-      class="md:hidden border-t border-border bg-bg"
+      class="mx-auto mt-2 max-w-6xl rounded-3xl border border-border-subtle bg-white p-5 shadow-xl md:hidden"
     >
-      <div class="mx-auto max-w-6xl px-6 py-6 flex flex-col gap-5">
+      <div class="flex flex-col">
         <button
           v-for="link in links"
           :key="link.name"
           type="button"
-          class="text-left nav-item text-base"
+          class="border-b border-border-subtle py-3 text-left text-sm font-medium text-primary last:border-b-0"
           @click="scrollTo(link.href)"
         >
           {{ link.name }}
         </button>
-        <div class="pt-4 border-t border-border">
-          <span class="label-mono">Harare, Zimbabwe · UTC+2</span>
-        </div>
       </div>
+      <p class="label-mono mt-4">
+        Harare, Zimbabwe · UTC+2
+      </p>
     </div>
   </nav>
 </template>

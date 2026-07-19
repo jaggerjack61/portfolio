@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 
 type Project = {
   title: string
@@ -87,171 +86,103 @@ const projects: Project[] = [
   }
 ]
 
-const selectedIndex = ref(0)
 </script>
 
 <template>
   <section
     id="projects"
-    class="relative z-10 py-24 md:py-40 overflow-hidden"
+    class="relative overflow-hidden bg-white py-24 md:py-36"
   >
-    <div class="mx-auto max-w-7xl px-6">
-      <div class="mb-16">
-        <span class="reveal section-number">03 / Projects</span>
-        <div class="reveal reveal-delay-1 flex flex-col md:flex-row md:items-end md:justify-between gap-4 mt-2">
-          <h2 class="display-heading text-4xl md:text-5xl lg:text-6xl">
-            Built to last,<br>
-            <em class="italic not-italic opacity-60">not just demo.</em>
+    <div class="section-shell">
+      <div class="mb-14 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-end">
+        <div class="md:col-span-8">
+          <span class="reveal section-number">03 · Projects</span>
+          <h2 class="reveal reveal-delay-1 display-heading text-4xl md:text-5xl lg:text-6xl">
+            Built to last,<br class="hidden sm:block"> not just demo.
           </h2>
-          <p class="body-text max-w-sm text-sm">
-            Each project started as a real problem. Here's what shipping looks like.
-          </p>
         </div>
+        <p class="reveal reveal-delay-2 body-text max-w-md text-sm md:col-span-4">
+          Each project started as a real problem. Here's what thoughtful, practical shipping looks like.
+        </p>
       </div>
 
-      <div class="reveal reveal-delay-2 grid grid-cols-1 lg:grid-cols-12 gap-0 min-h-[560px]">
-        <div class="lg:col-span-8 relative overflow-hidden">
-          <div
-            v-for="(project, index) in projects"
-            :key="project.title"
-            class="absolute inset-0 transition-opacity duration-500"
-            :style="{ opacity: selectedIndex === index ? 1 : 0, zIndex: selectedIndex === index ? 1 : 0 }"
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <article
+          v-for="(project, index) in projects"
+          :key="project.title"
+          class="reveal project-card group flex flex-col"
+          :class="[
+            project.featured ? 'md:col-span-2 lg:col-span-2 lg:grid lg:grid-cols-2' : '',
+            index > 0 ? `reveal-delay-${Math.min((index % 3) + 1, 4)}` : '',
+          ]"
+        >
+          <a
+            :href="project.link"
+            target="_blank"
+            rel="noreferrer"
+            class="relative block min-h-52 overflow-hidden bg-bg-elevated"
+            :class="project.featured ? 'lg:min-h-full' : ''"
+            :aria-label="`View ${project.title} repository`"
           >
-            <div class="relative h-full">
-              <img
-                :src="project.imageSrc"
-                :alt="project.imageAlt"
-                class="w-full h-full object-cover"
-                style="filter: brightness(0.45) saturate(0.8);"
-              >
-              <div
-                class="absolute inset-0"
-                style="background: linear-gradient(135deg, rgba(12,12,14,0.85) 0%, rgba(12,12,14,0.3) 50%, rgba(12,12,14,0.6) 100%);"
-              />
-              <div class="absolute inset-0 flex flex-col justify-end p-8 lg:p-12">
-                <div class="flex items-center gap-4 mb-4">
-                  <span
-                    class="font-display text-7xl lg:text-8xl leading-none opacity-20"
-                    style="color: var(--text-primary);"
-                  >
-                    {{ String(index + 1).padStart(2, '0') }}
-                  </span>
-                  <span
-                    v-if="index === 0"
-                    class="text-[0.6rem] px-2 py-0.5 border tracking-widest uppercase"
-                    style="border-color: var(--accent-warm); color: var(--accent-warm);"
-                  >
-                    Featured
-                  </span>
-                </div>
-                <h3
-                  class="font-display text-3xl lg:text-5xl mb-4 leading-tight"
-                  style="color: var(--text-primary);"
-                >
+            <img
+              :src="project.imageSrc"
+              :alt="project.imageAlt"
+              class="project-img absolute inset-0 h-full w-full object-cover"
+              :class="project.title === 'Track My Gains' ? 'object-top' : ''"
+            >
+            <span
+              v-if="project.featured"
+              class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 font-mono text-[0.58rem] uppercase tracking-wider text-accent shadow-sm"
+            >
+              Featured project
+            </span>
+          </a>
+
+          <div class="flex flex-1 flex-col p-6 md:p-7">
+            <div class="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <p class="font-mono text-[0.6rem] uppercase tracking-[0.15em] text-accent">
+                  Project {{ String(index + 1).padStart(2, '0') }}
+                </p>
+                <h3 class="mt-2 text-xl font-semibold tracking-tight text-primary md:text-2xl">
                   {{ project.title }}
                 </h3>
-                <p
-                  class="text-sm leading-relaxed mb-6 max-w-lg"
-                  style="color: var(--text-secondary);"
-                >
-                  {{ project.desc }}
-                </p>
-                <div class="flex items-center gap-4">
-                  <a
-                    :href="project.link"
-                    target="_blank"
-                    rel="noreferrer"
-                    class="btn-primary"
-                  >
-                    View Repository
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                    >
-                      <path d="M7 17L17 7M17 7H7M17 7v10" />
-                    </svg>
-                  </a>
-                  <div class="flex flex-wrap gap-2">
-                    <span
-                      v-for="t in project.tech"
-                      :key="t"
-                      class="skill-tag"
-                    >
-                      {{ t }}
-                    </span>
-                  </div>
-                </div>
               </div>
+              <a
+                :href="project.link"
+                target="_blank"
+                rel="noreferrer"
+                class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border-subtle text-primary transition-colors hover:border-accent hover:bg-accent hover:text-white"
+                :aria-label="`Open ${project.title} on GitHub`"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <path d="M7 17L17 7M17 7H7M17 7v10" />
+                </svg>
+              </a>
             </div>
-          </div>
-        </div>
 
-        <div
-          class="lg:col-span-4 flex flex-col"
-          style="background: var(--bg-secondary); border-left: 1px solid var(--border-subtle);"
-        >
-          <div
-            v-for="(project, index) in projects"
-            :key="project.title"
-            class="flex-1 border-b last:border-b-0 cursor-pointer group transition-all duration-300 relative overflow-hidden"
-            :style="{ borderColor: 'var(--border-subtle)' }"
-            :class="selectedIndex === index ? '' : 'opacity-50 hover:opacity-75'"
-            @click="selectedIndex = index"
-          >
-            <div class="p-5 relative z-10">
-              <div class="flex items-start justify-between gap-3">
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span
-                      class="font-mono text-[0.6rem] tracking-widest uppercase"
-                      style="color: var(--accent-warm);"
-                    >
-                      {{ String(index + 1).padStart(2, '0') }}
-                    </span>
-                    <span
-                      v-if="index === 0"
-                      class="text-[0.55rem] px-1.5 py-0.5 tracking-wider uppercase"
-                      style="background: var(--accent-warm); color: var(--bg-primary);"
-                    >
-                      Featured
-                    </span>
-                  </div>
-                  <h4
-                    class="font-display text-lg leading-tight truncate"
-                    :style="{ color: selectedIndex === index ? 'var(--text-primary)' : 'var(--text-secondary)' }"
-                  >
-                    {{ project.title }}
-                  </h4>
-                  <p
-                    class="text-[0.65rem] mt-1 leading-snug line-clamp-2"
-                    style="color: var(--text-muted);"
-                  >
-                    {{ project.tech.slice(0, 3).join(' · ') }}
-                  </p>
-                </div>
-                <div
-                  class="w-12 h-12 shrink-0 overflow-hidden"
-                  style="background: var(--border-subtle);"
-                >
-                  <img
-                    :src="project.imageSrc"
-                    :alt="project.imageAlt"
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  >
-                </div>
-              </div>
+            <p class="text-sm leading-relaxed text-text-secondary">
+              {{ project.desc }}
+            </p>
+
+            <div class="mt-auto flex flex-wrap gap-2 pt-6">
+              <span
+                v-for="technology in project.tech"
+                :key="technology"
+                class="skill-tag"
+              >
+                {{ technology }}
+              </span>
             </div>
-            <div
-              v-if="selectedIndex === index"
-              class="absolute left-0 top-0 bottom-0 w-0.5"
-              style="background: var(--accent-warm);"
-            />
           </div>
-        </div>
+        </article>
       </div>
     </div>
   </section>

@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
 export default {
-  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx,vue}"],
   theme: {
     container: {
@@ -11,28 +10,28 @@ export default {
     extend: {
       colors: {
         bg: {
-          primary: '#0C0C0E',
-          secondary: '#141416',
-          elevated: '#1C1C1F',
+          primary: '#F7F8F4',
+          secondary: '#FFFFFF',
+          elevated: '#EEF2FF',
         },
-        surface: '#232326',
-        foreground: '#F5F5F3',
-        primary: '#F5F5F3',
+        surface: '#FFFFFF',
+        foreground: '#182034',
+        primary: '#182034',
         border: {
-          DEFAULT: '#2E2E31',
-          subtle: '#252528',
+          DEFAULT: '#D8DDE8',
+          subtle: '#E8EBF1',
         },
         text: {
-          primary: '#F5F5F3',
-          secondary: '#A8A8A5',
-          muted: '#6E6E6B',
+          primary: '#182034',
+          secondary: '#566074',
+          muted: '#7C8597',
         },
-        accent: '#E8E4DD',
-        'accent-warm': '#C4956A',
+        accent: '#3659E3',
+        'accent-warm': '#3659E3',
       },
       fontFamily: {
         sans: ['Instrument Sans', 'sans-serif'],
-        display: ['Fraunces', 'Georgia', 'serif'],
+        display: ['Instrument Sans', 'sans-serif'],
         mono: ['DM Mono', 'Courier New', 'monospace'],
       },
     },

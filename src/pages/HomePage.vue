@@ -38,10 +38,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    class="relative w-full min-h-screen"
-    style="background: var(--bg-primary);"
-  >
+  <div class="relative min-h-screen w-full bg-bg-primary">
     <Navigation />
 
     <main class="relative z-10">

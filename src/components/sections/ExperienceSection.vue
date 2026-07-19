@@ -1,105 +1,101 @@
 <script setup lang="ts">
 const experiences = [
   {
-    role: "Senior Software Engineer",
-    company: "ZETDC — Zimbabwe Electricity Transmission and Distribution Company",
-    period: "2024 — Present",
+    role: 'AI Engineer',
+    company: 'Econet Wireless',
+    period: 'Jul 2026 — Present',
     description: [
-      "Converted Excel-based electricity trading and risk management into a production-grade web application.",
-      "Designed backend services and REST APIs for data validation, reporting, and auditability.",
-      "Integrated AI-driven analytics for historical energy and trading datasets."
-    ]
+      'Designing and delivering AI-powered systems for Econet Wireless.',
+    ],
+    current: true,
   },
   {
-    role: "Software Developer",
-    company: "LADS Africa",
-    period: "2021 — 2023",
+    role: 'Senior Software Engineer',
+    company: 'ZETDC — Zimbabwe Electricity Transmission and Distribution Company',
+    period: '2024 — Jun 2026',
     description: [
-      "Developed and maintained modules for a cloud-based ERP system used by multiple City and Rural District Councils.",
-      "Built a Laravel-based POS analytics dashboard on AWS for real-time sales and cash-flow monitoring."
-    ]
+      'Converted Excel-based electricity trading and risk management into a production-grade web application.',
+      'Designed backend services and REST APIs for data validation, reporting, and auditability.',
+      'Integrated AI-driven analytics for historical energy and trading datasets.',
+    ],
   },
   {
-    role: "Full-Stack Developer",
-    company: "Freelance / Contract",
-    period: "2017 — 2023",
+    role: 'Software Developer',
+    company: 'LADS Africa',
+    period: '2021 — 2023',
     description: [
-      "Built a WhatsApp Cloud API chatbot for the National Social Security Authority (NSSA).",
-      "Co-developed Pahukama, one of Zimbabwe's largest online supermarkets."
-    ]
-  }
+      'Developed and maintained modules for a cloud-based ERP system used by multiple City and Rural District Councils.',
+      'Built a Laravel-based POS analytics dashboard on AWS for real-time sales and cash-flow monitoring.',
+    ],
+  },
+  {
+    role: 'Full-Stack Developer',
+    company: 'Freelance / Contract',
+    period: '2017 — 2023',
+    description: [
+      'Built a WhatsApp Cloud API chatbot for the National Social Security Authority (NSSA).',
+      "Co-developed Pahukama, one of Zimbabwe's largest online supermarkets.",
+    ],
+  },
 ]
 </script>
 
 <template>
   <section
     id="experience"
-    class="relative z-10 py-24 md:py-40"
-    style="background: var(--bg-secondary);"
+    class="relative bg-bg-primary py-24 md:py-36"
   >
-    <div class="mx-auto max-w-7xl px-6">
-      <div class="mb-16">
-        <span class="reveal section-number">02 / Experience</span>
-        <div class="reveal reveal-delay-1 flex flex-col md:flex-row md:items-end md:justify-between gap-4 mt-2">
-          <h2 class="display-heading text-4xl md:text-5xl lg:text-6xl">
-            The work speaks<br>
-            <em class="italic not-italic opacity-60">in production.</em>
+    <div class="section-shell">
+      <div class="mb-14 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-end">
+        <div class="md:col-span-8">
+          <span class="reveal section-number">02 · Experience</span>
+          <h2 class="reveal reveal-delay-1 display-heading text-4xl md:text-5xl lg:text-6xl">
+            Work that lives<br class="hidden sm:block"> in production.
           </h2>
-          <p class="body-text max-w-sm text-sm">
-            Energy platforms, civic infrastructure, commerce — systems that handle real load.
-          </p>
         </div>
+        <p class="reveal reveal-delay-2 body-text max-w-md text-sm md:col-span-4">
+          AI, energy platforms, civic infrastructure, and commerce — systems built for real people and real load.
+        </p>
       </div>
 
-      <div class="space-y-0">
-        <div
+      <div class="overflow-hidden rounded-3xl border border-border-subtle bg-white px-6 md:px-9">
+        <article
           v-for="(exp, index) in experiences"
-          :key="index"
-          class="reveal group"
-          :class="index === 0 ? '' : `reveal-delay-${index}`"
+          :key="`${exp.role}-${exp.company}`"
+          class="reveal exp-entry relative"
+          :class="index > 0 ? `reveal-delay-${Math.min(index, 4)}` : ''"
         >
-          <div
-            class="exp-entry group-hover:!border-opacity-100"
-            style="border-color: var(--border-subtle); transition: border-color 0.3s ease;"
-          >
-            <div>
-              <p
-                class="label-mono"
-                style="color: var(--accent-warm);"
-              >
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <p class="label-mono text-accent">
                 {{ exp.period }}
               </p>
-              <p
-                class="font-display text-xl mt-2 leading-tight"
-                style="color: var(--text-primary);"
+              <span
+                v-if="exp.current"
+                class="rounded-full bg-emerald-50 px-2.5 py-1 font-mono text-[0.56rem] uppercase tracking-wider text-emerald-700"
               >
-                {{ exp.role }}
-              </p>
-              <p
-                class="text-sm mt-1"
-                style="color: var(--text-muted);"
-              >
-                {{ exp.company }}
-              </p>
+                Current
+              </span>
             </div>
-            <div>
-              <ul class="space-y-3">
-                <li
-                  v-for="(item, i) in exp.description"
-                  :key="i"
-                  class="flex items-start gap-4 text-sm leading-relaxed"
-                  style="color: var(--text-secondary);"
-                >
-                  <span
-                    class="mt-2 w-1 h-1 rounded-full shrink-0"
-                    style="background: var(--accent-warm);"
-                  />
-                  <span>{{ item }}</span>
-                </li>
-              </ul>
-            </div>
+            <h3 class="mt-3 text-xl font-semibold leading-tight tracking-tight text-primary">
+              {{ exp.role }}
+            </h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-text-muted">
+              {{ exp.company }}
+            </p>
           </div>
-        </div>
+
+          <ul class="space-y-3">
+            <li
+              v-for="item in exp.description"
+              :key="item"
+              class="flex items-start gap-4 text-sm leading-relaxed text-text-secondary"
+            >
+              <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+              <span>{{ item }}</span>
+            </li>
+          </ul>
+        </article>
       </div>
     </div>
   </section>
