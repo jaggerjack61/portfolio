@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const profileImage = 'images/profile_pic.png'
-const contextImage = 'images/projects/hero-datacenter.jpeg'
+const github = 'https://github.com/jaggerjack61'
+const linkedin = 'https://linkedin.com/in/samuel-jarai'
 
 const scrollTo = (href: string) => {
   const section = document.getElementById(href)
@@ -89,51 +90,71 @@ const scrollTo = (href: string) => {
         </div>
 
         <div class="relative lg:col-span-5">
-          <div class="reveal reveal-delay-2 relative mx-auto max-w-[31rem]">
+          <div class="reveal reveal-delay-2 relative mx-auto max-w-[24rem]">
             <div class="soft-card relative overflow-hidden p-3 md:p-4">
-              <div class="relative min-h-[29rem] overflow-hidden rounded-[1.15rem] bg-[#dde5fb] md:min-h-[34rem]">
-                <img
-                  :src="contextImage"
-                  alt="Modern data centre infrastructure"
-                  class="absolute inset-0 h-full w-full object-cover opacity-90"
-                >
-                <div class="absolute inset-0 bg-gradient-to-t from-[#17213b]/75 via-[#3659e3]/5 to-white/5" />
-                <div class="absolute inset-x-5 bottom-5 rounded-2xl border border-white/40 bg-white/90 p-4 shadow-xl backdrop-blur-md">
-                  <div class="flex items-center gap-3">
-                    <img
-                      :src="profileImage"
-                      alt="Samuel Jarai"
-                      class="h-14 w-14 rounded-xl object-cover ring-2 ring-white"
-                    >
-                    <div>
-                      <p class="font-semibold tracking-tight text-primary">
-                        Samuel Jarai
-                      </p>
-                      <p class="mt-0.5 text-xs text-text-secondary">
-                        AI Engineer at Econet Wireless
-                      </p>
-                    </div>
-                  </div>
+              <div class="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[#e8edff] blur-2xl" />
+              <div class="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-[#eef7f0] blur-2xl" />
+
+              <div class="relative flex flex-col items-center rounded-[1.15rem] bg-gradient-to-br from-white/70 via-[#f2f5ff] to-[#f0f6f1] px-6 py-10 text-center md:py-12">
+                <div class="relative">
+                  <img
+                    :src="profileImage"
+                    alt="Samuel Jarai"
+                    class="h-28 w-28 rounded-2xl object-cover shadow-lg ring-4 ring-white md:h-32 md:w-32"
+                  >
+                  <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 ring-4 ring-white">
+                    <span class="h-2 w-2 animate-ping rounded-full bg-emerald-300" />
+                  </span>
                 </div>
-              </div>
-            </div>
 
-            <div class="absolute -left-4 top-8 rounded-2xl border border-border-subtle bg-white px-4 py-3 shadow-lg md:-left-10">
-              <p class="label-mono text-[0.58rem]">
-                Current focus
-              </p>
-              <p class="mt-1 text-sm font-medium text-primary">
-                AI · Cloud · Product
-              </p>
-            </div>
+                <h2 class="mt-6 text-2xl font-semibold tracking-tight text-primary">
+                  Samuel Jarai
+                </h2>
+                <p class="mt-1 text-sm text-text-secondary">
+                  AI Engineer at Econet Wireless
+                </p>
+                <p class="label-mono mt-4 text-[0.58rem]">
+                  Harare · Zimbabwe
+                </p>
 
-            <div class="absolute -right-3 top-24 rounded-2xl border border-border-subtle bg-white p-3 shadow-lg md:-right-8">
-              <div class="flex items-center gap-2">
-                <span class="relative flex h-2.5 w-2.5">
-                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                  <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                </span>
-                <span class="text-xs font-medium text-primary">Open to collaborate</span>
+                <div class="mt-6 h-px w-16 bg-border" />
+
+                <div class="mt-6 flex items-center gap-3">
+                  <a
+                    :href="github"
+                    target="_blank"
+                    rel="noopener"
+                    aria-label="GitHub"
+                    class="flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle bg-white text-text-secondary transition hover:border-accent hover:text-accent"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.57 2.34 1.12 2.91.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.25 10.25 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z" />
+                    </svg>
+                  </a>
+                  <a
+                    :href="linkedin"
+                    target="_blank"
+                    rel="noopener"
+                    aria-label="LinkedIn"
+                    class="flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle bg-white text-text-secondary transition hover:border-accent hover:text-accent"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.55V9h3.57v11.45Z" />
+                    </svg>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
