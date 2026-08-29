@@ -31,7 +31,7 @@ const scrollTo = (href: string) => {
           </h1>
 
           <p class="reveal reveal-delay-2 mt-8 max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
-            I'm Samuel Jarai, an AI and full-stack engineer in Harare. I build cloud-backed systems for infrastructure, commerce, and public platforms — from architecture to polished delivery.
+            I'm Samuel Jarai, an AI and full-stack engineer in Harare. I build cloud-backed systems for infrastructure, commerce, and public platforms, from architecture to polished delivery.
           </p>
 
           <div class="reveal reveal-delay-3 mt-9 flex flex-wrap items-center gap-3">

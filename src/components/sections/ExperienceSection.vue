@@ -3,7 +3,7 @@ const experiences = [
   {
     role: 'AI Engineer',
     company: 'Econet Wireless',
-    period: 'Jul 2026 — Present',
+    period: 'Jul 2026 - Present',
     description: [
       'Designing and delivering AI-powered systems for Econet Wireless.',
     ],
@@ -11,8 +11,8 @@ const experiences = [
   },
   {
     role: 'Senior Software Engineer',
-    company: 'ZETDC — Zimbabwe Electricity Transmission and Distribution Company',
-    period: '2024 — Jun 2026',
+    company: 'ZETDC (Zimbabwe Electricity Transmission and Distribution Company)',
+    period: '2024 - Jun 2026',
     description: [
       'Converted Excel-based electricity trading and risk management into a production-grade web application.',
       'Designed backend services and REST APIs for data validation, reporting, and auditability.',
@@ -22,7 +22,7 @@ const experiences = [
   {
     role: 'Software Developer',
     company: 'LADS Africa',
-    period: '2021 — 2023',
+    period: '2021 - 2023',
     description: [
       'Developed and maintained modules for a cloud-based ERP system used by multiple City and Rural District Councils.',
       'Built a Laravel-based POS analytics dashboard on AWS for real-time sales and cash-flow monitoring.',
@@ -31,7 +31,7 @@ const experiences = [
   {
     role: 'Full-Stack Developer',
     company: 'Freelance / Contract',
-    period: '2017 — 2023',
+    period: '2017 - 2023',
     description: [
       'Built a WhatsApp Cloud API chatbot for the National Social Security Authority (NSSA).',
       "Co-developed Pahukama, one of Zimbabwe's largest online supermarkets.",
@@ -54,7 +54,7 @@ const experiences = [
           </h2>
         </div>
         <p class="reveal reveal-delay-2 body-text max-w-md text-sm md:col-span-4">
-          AI, energy platforms, civic infrastructure, and commerce — systems built for real people and real load.
+          AI, energy platforms, civic infrastructure, and commerce: systems built for real people and real load.
         </p>
       </div>
 

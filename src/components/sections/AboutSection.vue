@@ -10,8 +10,8 @@ const coreStack = ['Django', 'Laravel', 'Vue', 'React', 'Terraform', 'AWS', 'OCI
 
 const awards = [
   { title: 'Presidential Innovation Award', year: '2023' },
-  { title: 'ZESA Risk Awards — Innovation in ICT', year: '2024' },
-  { title: 'HIT Book Prize — Best Capstone Design', year: '2023' },
+  { title: 'ZESA Risk Awards · Innovation in ICT', year: '2024' },
+  { title: 'HIT Book Prize · Best Capstone Design', year: '2023' },
 ]
 
 const certifications = [
@@ -39,7 +39,7 @@ const certifications = [
 
           <div class="mt-10 grid grid-cols-1 gap-7 md:grid-cols-2">
             <p class="reveal reveal-delay-2 body-text">
-              Full-stack engineer with deep backend expertise in Python and PHP, matched with modern frontend delivery in Vue and React. I work across the entire stack — from database schema to deployment pipeline.
+              Full-stack engineer with deep backend expertise in Python and PHP, matched with modern frontend delivery in Vue and React. I work across the entire stack, from database schema to deployment pipeline.
             </p>
             <p class="reveal reveal-delay-3 body-text">
               Production experience across AWS and Oracle Cloud. I've shipped energy trading platforms, ERP modules for municipal governments, WhatsApp commerce bots, and developer tools used by Laravel teams.
