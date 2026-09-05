@@ -25,7 +25,7 @@ const router = createRouter({
     if (to.hash) {
       return {
         el: to.hash,
-        behavior: 'smooth',
+        behavior: document.documentElement.dataset.motion === 'paused' ? 'auto' : 'smooth',
       }
     }
     return savedPosition || { top: 0 }

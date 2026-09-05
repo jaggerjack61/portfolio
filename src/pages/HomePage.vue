@@ -1,52 +1,29 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
-import HeroSection from '@/components/sections/HeroSection.vue'
-import AboutSection from '@/components/sections/AboutSection.vue'
-import ExperienceSection from '@/components/sections/ExperienceSection.vue'
-import ProjectsSection from '@/components/sections/ProjectsSection.vue'
-import ContactSection from '@/components/sections/ContactSection.vue'
 import Navigation from '@/components/ui/Navigation.vue'
-
-let revealObserver: IntersectionObserver | null = null
-
-const setupReveal = () => {
-  revealObserver?.disconnect()
-
-  revealObserver = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue
-        ;(entry.target as HTMLElement).classList.add('is-visible')
-      }
-    },
-    { threshold: 0.06, rootMargin: '0px 0px -40px 0px' },
-  )
-
-  document.querySelectorAll<HTMLElement>('.reveal').forEach((el) => {
-    revealObserver?.observe(el)
-  })
-}
-
+import PortfolioStage from '@/components/PortfolioStage.vue'
+import { setupMotion } from '@/composables/useMotion'
+let cleanupMotion: (() => void) | undefined
 onMounted(() => {
-  setupReveal()
+  cleanupMotion = setupMotion()
 })
-
 onBeforeUnmount(() => {
-  revealObserver?.disconnect()
-  revealObserver = null
+  cleanupMotion?.()
 })
 </script>
 
 <template>
   <div class="relative min-h-screen w-full bg-bg-primary">
     <Navigation />
-
-    <main class="relative z-10">
-      <HeroSection />
-      <AboutSection />
-      <ExperienceSection />
-      <ProjectsSection />
-      <ContactSection />
+    <main
+      id="main-content"
+      tabindex="-1"
+      class="relative z-10"
+    >
+      <h1 class="sr-only">
+        Samuel Jarai — AI Engineer portfolio
+      </h1>
+      <PortfolioStage />
     </main>
   </div>
 </template>

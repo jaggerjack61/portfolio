@@ -1,188 +1,103 @@
 <script setup lang="ts">
-
-type Project = {
-  title: string
-  desc: string
-  tech: string[]
-  link: string
-  imageSrc: string
-  imageAlt: string
-  featured?: boolean
-}
-
-const projects: Project[] = [
-  {
-    title: "AreYouStillThere",
-    desc: "Full-stack service monitoring application. Register services, run HTTP/content checks, track incidents and uptime, and send email notifications for outages and recoveries. Uses JWT auth, Django REST backend with Celery for background checks, and a React dashboard.",
-    tech: ["Django", "React", "Celery", "Redis"],
-    link: "https://github.com/jaggerjack61/AreYouStillThere",
-    imageSrc: "images/projects/AreYouStillThere.png",
-    imageAlt: "AreYouStillThere service monitoring",
-    featured: true
-  },
-  {
-    title: "Harness",
-    desc: "Lightweight AI agent framework that connects to any OpenAI-compatible chat model with built-in tools for reading, writing, editing files, and executing shell commands. Features streaming responses, markdown rendering, chain-of-thought reasoning, and real-time token tracking.",
-    tech: ["Python", "OpenAI API", "CLI"],
-    link: "https://github.com/jaggerjack61/Harness.git",
-    imageSrc: "images/projects/Harness.png",
-    imageAlt: "Harness AI agent framework"
-  },
-  {
-    title: "Laravel ERD",
-    desc: "VS Code extension that parses Laravel migrations and Eloquent models to render interactive ER diagrams with inline editing support. Built for Laravel developers who need to visualize database schemas without leaving their editor.",
-    tech: ["TypeScript", "VS Code API", "Laravel"],
-    link: "https://github.com/jaggerjack61/LaravelERD",
-    imageSrc: "images/projects/laravel-erd.png",
-    imageAlt: "Laravel ERD VS Code extension"
-  },
-  {
-    title: "SchemaField",
-    desc: "Schema-driven form builder and data capture platform with analytics dashboard. Enables teams to create dynamic forms without writing code, with real-time analytics on submissions.",
-    tech: ["React", "Django REST", "MySQL"],
-    link: "https://github.com/jaggerjack61/SchemaField",
-    imageSrc: "images/projects/SchemaField.png",
-    imageAlt: "SchemaField platform"
-  },
-  {
-    title: "Database Hoarder",
-    desc: "Multi-tenant database backup automation platform with retention and replication policies. Manages backup schedules, cross-region replication, and point-in-time recovery for PostgreSQL and MySQL.",
-    tech: ["Django", "React", "AWS"],
-    link: "https://github.com/jaggerjack61/DatabaseHoarder",
-    imageSrc: "images/projects/database-hoarder.png",
-    imageAlt: "Database Hoarder dashboard"
-  },
-  {
-    title: "Track My Gains",
-    desc: "Cross-platform fitness tracker with themed dashboards for workouts, weight, diet, and cycles. Built with Expo and React Native for a consistent experience across iOS and Android.",
-    tech: ["Expo", "React Native", "Firebase"],
-    link: "https://github.com/jaggerjack61/TrackMyGains/",
-    imageSrc: "images/projects/TrackMyGains.jpg",
-    imageAlt: "Track My Gains app"
-  },
-  {
-    title: "Chatbot Designer API",
-    desc: "Django REST API for designing and managing WhatsApp chatbots with bulk messaging capabilities. A visual flow builder backed by a robust webhook-driven messaging system.",
-    tech: ["Django", "Python", "WhatsApp API"],
-    link: "https://github.com/jaggerjack61/ChatbotDesignerAPI.git",
-    imageSrc: "images/projects/chatbot-designer-api.png",
-    imageAlt: "Chatbot Designer API"
-  },
-  {
-    title: "Academic Tracker",
-    desc: "Comprehensive academic tracking system for managing students, grades, and subjects. Handles attendance, examination records, and generates report cards for institutions.",
-    tech: ["Laravel", "PHP", "MySQL"],
-    link: "https://github.com/jaggerjack61/academic-tracker-back.git",
-    imageSrc: "images/projects/academic-tracker-backend.png",
-    imageAlt: "Academic Tracker backend"
-  },
-  {
-    title: "NSSA Paynow Bot",
-    desc: "WhatsApp bot for NSSA registration and payments via Paynow integration. Citizens can check contributions, register dependents, and initiate payments without visiting an office.",
-    tech: ["Laravel", "PHP", "Paynow"],
-    link: "https://github.com/jaggerjack61/NSSA_Paynow.git",
-    imageSrc: "images/projects/nssa-paynow-bot.jpg",
-    imageAlt: "NSSA Paynow Bot"
-  }
-]
-
+import { orderedProjects, categories } from '@/data/portfolio'
 </script>
 
 <template>
   <section
     id="projects"
-    class="relative overflow-hidden bg-white py-24 md:py-36"
+    tabindex="-1"
+    class="content-section projects-section"
   >
     <div class="section-shell">
-      <div class="mb-14 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-end">
-        <div class="md:col-span-8">
-          <span class="reveal section-number">03 · Projects</span>
-          <h2 class="reveal reveal-delay-1 display-heading text-4xl md:text-5xl lg:text-6xl">
-            Built to last,<br class="hidden sm:block"> not just demo.
+      <div class="section-heading reveal">
+        <div>
+          <span class="section-number">01 / Selected work</span>
+          <h2 class="display-heading">
+            Ideas, made <span class="muted-heading">operational.</span>
           </h2>
         </div>
-        <p class="reveal reveal-delay-2 body-text max-w-md text-sm md:col-span-4">
-          Each project started as a real problem. Here's what thoughtful, practical shipping looks like.
+        <p class="section-intro">
+          AI agents, developer tools, and systems built for real-world use. A selection of things I've
+          shipped.
         </p>
       </div>
-
-      <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div class="projects-grid">
         <article
-          v-for="(project, index) in projects"
+          v-for="(project, index) in orderedProjects"
           :key="project.title"
-          class="reveal project-card group flex flex-col"
-          :class="[
-            project.featured ? 'md:col-span-2 lg:col-span-2 lg:grid lg:grid-cols-2' : '',
-            index > 0 ? `reveal-delay-${Math.min((index % 3) + 1, 4)}` : '',
-          ]"
+          class="project-card reveal"
+          :class="{ 'featured-project': index === 0 }"
         >
           <a
             :href="project.link"
             target="_blank"
-            rel="noreferrer"
-            class="relative block min-h-52 overflow-hidden bg-bg-elevated"
-            :class="project.featured ? 'lg:min-h-full' : ''"
+            rel="noopener noreferrer"
+            class="project-image-link"
             :aria-label="`View ${project.title} repository`"
           >
-            <img
-              :src="project.imageSrc"
-              :alt="project.imageAlt"
-              class="project-img absolute inset-0 h-full w-full object-cover"
-              :class="project.title === 'Track My Gains' ? 'object-top' : ''"
-            >
-            <span
-              v-if="project.featured"
-              class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 font-mono text-[0.58rem] uppercase tracking-wider text-accent shadow-sm"
-            >
-              Featured project
-            </span>
+            <div class="project-image-toolbar">
+              <span
+                class="window-dots"
+                aria-hidden="true"
+              ><i /><i /><i /></span><span>{{ project.title === 'Harness' ? 'harness / agent.py' : project.title }}</span><span aria-hidden="true">↗</span>
+            </div>
+            <div class="project-image-frame">
+              <img
+                :src="project.imageSrc"
+                :alt="project.imageAlt"
+                loading="lazy"
+                decoding="async"
+                class="project-img"
+                :class="{ 'image-top': project.title === 'Track My Gains' }"
+              >
+            </div>
           </a>
-
-          <div class="flex flex-1 flex-col p-6 md:p-7">
-            <div class="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <p class="font-mono text-[0.6rem] uppercase tracking-[0.15em] text-accent">
-                  Project {{ String(index + 1).padStart(2, '0') }}
-                </p>
-                <h3 class="mt-2 text-xl font-semibold tracking-tight text-primary md:text-2xl">
-                  {{ project.title }}
-                </h3>
-              </div>
+          <div class="project-content">
+            <div class="project-category">
+              <span>{{ index === 0 ? 'Featured project' : categories[project.title] }}</span><span>{{ String(index + 1).padStart(2, '0') }} / 09</span>
+            </div>
+            <h3>
               <a
                 :href="project.link"
                 target="_blank"
-                rel="noreferrer"
-                class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border-subtle text-primary transition-colors hover:border-accent hover:bg-accent hover:text-white"
-                :aria-label="`Open ${project.title} on GitHub`"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                >
-                  <path d="M7 17L17 7M17 7H7M17 7v10" />
-                </svg>
-              </a>
-            </div>
-
-            <p class="text-sm leading-relaxed text-text-secondary">
+                rel="noopener noreferrer"
+              >{{ project.title }}<span aria-hidden="true">↗</span></a>
+            </h3>
+            <p
+              v-if="index === 0"
+              class="featured-deck"
+            >
+              A small framework.<br>A capable AI agent.
+            </p>
+            <p class="project-description">
               {{ project.desc }}
             </p>
-
-            <div class="mt-auto flex flex-wrap gap-2 pt-6">
+            <div class="project-tags">
               <span
                 v-for="technology in project.tech"
                 :key="technology"
                 class="skill-tag"
-              >
-                {{ technology }}
-              </span>
+              >{{
+                technology
+              }}</span>
             </div>
+            <a
+              v-if="index === 0"
+              :href="project.link"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-link"
+            >Explore Harness <span aria-hidden="true">↗</span></a>
           </div>
         </article>
+      </div>
+      <div class="projects-footer reveal">
+        <span>Built with curiosity. Shipped with intent.</span><a
+          href="https://github.com/jaggerjack61"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-link"
+        >More on GitHub <span aria-hidden="true">↗</span></a>
       </div>
     </div>
   </section>

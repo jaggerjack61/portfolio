@@ -1,167 +1,124 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { scrollToSection, useMotion } from '@/composables/useMotion'
 
-const links = [
-  { name: 'About', href: 'about' },
-  { name: 'Experience', href: 'experience' },
-  { name: 'Projects', href: 'projects' },
-  { name: 'Contact', href: 'contact' },
-]
-
-const activeSectionId = ref('')
+const links = ['Projects', 'About', 'Experience', 'Contact']
+const active = ref('')
 const mobileOpen = ref(false)
-const isScrolled = ref(false)
-
-let observer: IntersectionObserver | null = null
-const intersectionRatios = new Map<string, number>()
-
-const updateNavigation = () => {
-  isScrolled.value = window.scrollY > 12
-
-  if (window.scrollY < 80) {
-    activeSectionId.value = ''
-    return
-  }
-
-  let bestId = ''
-  let bestRatio = 0
-  for (const [id, ratio] of intersectionRatios.entries()) {
-    if (ratio > bestRatio) {
-      bestId = id
-      bestRatio = ratio
-    }
-  }
-  if (bestId) activeSectionId.value = bestId
+const toggle = ref<HTMLButtonElement>()
+const { paused, reducedMotion, toggleMotion } = useMotion()
+let observer: IntersectionObserver | undefined
+function sectionChanged(event: Event) {
+  active.value = (event as CustomEvent<string>).detail
 }
 
+function navigate(id: string) {
+  scrollToSection(id)
+  mobileOpen.value = false
+  document.getElementById(id)?.focus({ preventScroll: true })
+}
+function closeMenu() {
+  mobileOpen.value = false
+  toggle.value?.focus()
+}
+function skipToContent() {
+  document.getElementById('main-content')?.focus()
+}
 onMounted(() => {
+  window.addEventListener('portfolio:sectionchange', sectionChanged)
+  if (document.querySelector('.portfolio-stage')) return
   observer = new IntersectionObserver(
     (entries) => {
-      for (const entry of entries) {
-        const id = (entry.target as HTMLElement).id
-        intersectionRatios.set(id, entry.isIntersecting ? entry.intersectionRatio : 0)
-      }
-      updateNavigation()
+      for (const entry of entries) if (entry.isIntersecting) active.value = entry.target.id
     },
-    {
-      root: null,
-      rootMargin: '-80px 0px -60% 0px',
-      threshold: [0, 0.2, 0.5],
-    },
+    { rootMargin: '-15% 0px -65% 0px', threshold: 0 },
   )
-
-  for (const link of links) {
-    const sectionEl = document.getElementById(link.href)
-    if (sectionEl) observer.observe(sectionEl)
+  for (const id of ['hero', ...links.map((link) => link.toLowerCase())]) {
+    const section = document.getElementById(id)
+    if (section) observer.observe(section)
   }
-
-  window.addEventListener('scroll', updateNavigation, { passive: true })
-  updateNavigation()
 })
-
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', updateNavigation)
   observer?.disconnect()
-  observer = null
-  intersectionRatios.clear()
+  window.removeEventListener('portfolio:sectionchange', sectionChanged)
 })
-
-const scrollTo = (href: string) => {
-  const section = document.getElementById(href)
-  if (section) {
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    section.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' })
-  }
-  mobileOpen.value = false
-}
 </script>
 
 <template>
-  <nav class="fixed inset-x-0 top-0 z-50 px-4 pt-4 md:px-6">
-    <div
-      class="mx-auto max-w-6xl rounded-full border px-4 py-3 transition-all duration-300 md:px-5"
-      :class="isScrolled
-        ? 'border-border-subtle bg-white/95 shadow-[0_10px_35px_rgba(24,32,52,0.08)] backdrop-blur-xl'
-        : 'border-transparent bg-white/70 backdrop-blur-md'"
+  <a
+    href="#main-content"
+    class="skip-link"
+    @click.prevent="skipToContent"
+  >Skip to content</a>
+  <header
+    class="site-header"
+    @keydown.esc="closeMenu"
+  >
+    <nav
+      class="section-shell nav-shell"
+      aria-label="Main navigation"
     >
-      <div class="flex items-center justify-between">
+      <button
+        class="brand"
+        aria-label="Samuel Jarai, back to top"
+        @click="navigate('hero')"
+      >
+        <span class="brand-mark">s<span>j</span><b>.</b></span><span class="brand-name">SAMUEL JARAI<span>ENGINEER / BUILDER</span></span>
+      </button>
+      <div class="desktop-links">
         <button
-          type="button"
-          class="flex items-center gap-3"
-          aria-label="Back to the top"
-          @click="scrollTo('hero')"
+          v-for="(link, index) in links"
+          :key="link"
+          class="nav-item"
+          :class="{ active: active === link.toLowerCase() }"
+          :aria-current="active === link.toLowerCase() ? 'location' : undefined"
+          @click="navigate(link.toLowerCase())"
         >
-          <span class="grid h-9 w-9 place-items-center rounded-full bg-accent text-sm font-semibold text-white">SJ</span>
-          <span class="hidden text-sm font-semibold tracking-tight text-primary sm:inline">Samuel Jarai</span>
+          <span>0{{ index + 1 }}</span>{{ link }}
         </button>
-
-        <div class="hidden items-center gap-7 md:flex">
-          <button
-            v-for="link in links"
-            :key="link.name"
-            type="button"
-            :class="['nav-item', activeSectionId === link.href ? 'active' : '']"
-            @click="scrollTo(link.href)"
-          >
-            {{ link.name }}
-          </button>
-        </div>
-
+      </div>
+      <div class="nav-controls">
         <button
-          type="button"
-          class="hidden items-center gap-2 rounded-full border border-border-subtle bg-white px-4 py-2 text-xs font-medium text-primary transition-colors hover:border-accent hover:text-accent md:inline-flex"
-          @click="scrollTo('contact')"
+          class="motion-toggle"
+          :aria-pressed="paused"
+          :disabled="reducedMotion"
+          :aria-label="
+            reducedMotion
+              ? 'Reduced motion enabled by your system'
+              : paused
+                ? 'Resume motion'
+                : 'Pause motion'
+          "
+          @click="toggleMotion"
         >
-          <span class="h-2 w-2 rounded-full bg-emerald-500" />
-          Let's talk
+          <span aria-hidden="true">{{ paused || reducedMotion ? '▷' : 'Ⅱ' }}</span><span class="motion-label">{{
+            reducedMotion ? 'Reduced motion' : paused ? 'Resume motion' : 'Pause motion'
+          }}</span>
         </button>
-
         <button
-          type="button"
-          class="inline-grid h-9 w-9 place-items-center rounded-full border border-border-subtle bg-white text-primary md:hidden"
+          ref="toggle"
+          class="menu-toggle"
           :aria-expanded="mobileOpen"
-          aria-label="Toggle menu"
+          aria-controls="mobile-navigation"
+          :aria-label="mobileOpen ? 'Close menu' : 'Open menu'"
           @click="mobileOpen = !mobileOpen"
         >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-          >
-            <path
-              v-if="!mobileOpen"
-              d="M4 8h16M4 16h16"
-            />
-            <path
-              v-else
-              d="M18 6L6 18M6 6l12 12"
-            />
-          </svg>
+          {{ mobileOpen ? 'Close −' : 'Menu +' }}
         </button>
       </div>
-    </div>
-
-    <div
-      v-if="mobileOpen"
-      class="mx-auto mt-2 max-w-6xl rounded-3xl border border-border-subtle bg-white p-5 shadow-xl md:hidden"
-    >
-      <div class="flex flex-col">
+      <div
+        v-if="mobileOpen"
+        id="mobile-navigation"
+        class="mobile-menu"
+      >
         <button
           v-for="link in links"
-          :key="link.name"
-          type="button"
-          class="border-b border-border-subtle py-3 text-left text-sm font-medium text-primary last:border-b-0"
-          @click="scrollTo(link.href)"
+          :key="link"
+          @click="navigate(link.toLowerCase())"
         >
-          {{ link.name }}
+          {{ link }} <span aria-hidden="true">↗</span>
         </button>
       </div>
-      <p class="label-mono mt-4">
-        Harare, Zimbabwe · UTC+2
-      </p>
-    </div>
-  </nav>
+    </nav>
+  </header>
 </template>

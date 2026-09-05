@@ -2,7 +2,6 @@ import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import fs from 'fs/promises'
-import { viteSingleFile } from 'vite-plugin-singlefile'
 
 function optimizeImages(): Plugin {
   return {
@@ -41,9 +40,13 @@ function optimizeImages(): Plugin {
           if (output.length < originalSize) {
             await fs.writeFile(filePath, output)
             const saved = ((1 - output.length / originalSize) * 100).toFixed(0)
-            console.log(`  ${file}: ${(originalSize / 1024).toFixed(0)}KB → ${(output.length / 1024).toFixed(0)}KB (-${saved}%)`)
+            console.log(
+              `  ${file}: ${(originalSize / 1024).toFixed(0)}KB → ${(output.length / 1024).toFixed(0)}KB (-${saved}%)`,
+            )
           } else {
-            console.log(`  ${file}: ${(originalSize / 1024).toFixed(0)}KB (kept original, resize would increase size)`)
+            console.log(
+              `  ${file}: ${(originalSize / 1024).toFixed(0)}KB (kept original, resize would increase size)`,
+            )
           }
         }
       }
@@ -63,13 +66,8 @@ export default defineConfig({
   base: './',
   build: {
     sourcemap: 'hidden',
-    assetsInlineLimit: 100000000,
   },
-  plugins: [
-    vue(),
-    viteSingleFile(),
-    optimizeImages(),
-  ],
+  plugins: [vue(), optimizeImages()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

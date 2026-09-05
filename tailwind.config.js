@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx,vue}"],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx,vue}'],
   theme: {
     container: {
       center: true,
@@ -10,24 +10,24 @@ export default {
     extend: {
       colors: {
         bg: {
-          primary: '#F7F8F4',
-          secondary: '#FFFFFF',
-          elevated: '#EEF2FF',
+          primary: '#050A12',
+          secondary: '#0A1320',
+          elevated: '#102132',
         },
-        surface: '#FFFFFF',
-        foreground: '#182034',
-        primary: '#182034',
+        surface: '#0A1320',
+        foreground: '#E9F3FA',
+        primary: '#E9F3FA',
         border: {
-          DEFAULT: '#D8DDE8',
-          subtle: '#E8EBF1',
+          DEFAULT: '#263C4C',
+          subtle: '#1A2C3B',
         },
         text: {
-          primary: '#182034',
-          secondary: '#566074',
-          muted: '#7C8597',
+          primary: '#E9F3FA',
+          secondary: '#A8BAC8',
+          muted: '#92A8B9',
         },
-        accent: '#3659E3',
-        'accent-warm': '#3659E3',
+        accent: '#54E5FF',
+        'accent-warm': '#54E5FF',
       },
       fontFamily: {
         sans: ['Instrument Sans', 'sans-serif'],
@@ -37,4 +37,4 @@ export default {
     },
   },
   plugins: [],
-};
+}
