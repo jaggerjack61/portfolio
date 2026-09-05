@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { scrollToSection, useMotion } from '@/composables/useMotion'
+import { scrollToSection } from '@/composables/useMotion'
 
 const links = ['Projects', 'About', 'Experience', 'Contact']
 const active = ref('')
-const mobileOpen = ref(false)
+const menuOpen = ref(false)
 const toggle = ref<HTMLButtonElement>()
-const { paused, reducedMotion, toggleMotion } = useMotion()
 let observer: IntersectionObserver | undefined
 function sectionChanged(event: Event) {
   active.value = (event as CustomEvent<string>).detail
@@ -14,18 +13,20 @@ function sectionChanged(event: Event) {
 
 function navigate(id: string) {
   scrollToSection(id)
-  mobileOpen.value = false
-  document.getElementById(id)?.focus({ preventScroll: true })
+  if (!document.querySelector('.portfolio-stage')) document.getElementById(id)?.focus({ preventScroll: true })
 }
-function closeMenu() {
-  mobileOpen.value = false
-  toggle.value?.focus()
+function toggleMenu() {
+  window.dispatchEvent(new CustomEvent('portfolio:menu', { detail: !menuOpen.value }))
+}
+function menuChanged(event: Event) {
+  menuOpen.value = (event as CustomEvent<boolean>).detail
 }
 function skipToContent() {
   document.getElementById('main-content')?.focus()
 }
 onMounted(() => {
   window.addEventListener('portfolio:sectionchange', sectionChanged)
+  window.addEventListener('portfolio:menuchange', menuChanged)
   if (document.querySelector('.portfolio-stage')) return
   observer = new IntersectionObserver(
     (entries) => {
@@ -41,6 +42,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   observer?.disconnect()
   window.removeEventListener('portfolio:sectionchange', sectionChanged)
+  window.removeEventListener('portfolio:menuchange', menuChanged)
 })
 </script>
 
@@ -51,8 +53,8 @@ onBeforeUnmount(() => {
     @click.prevent="skipToContent"
   >Skip to content</a>
   <header
+    v-show="!menuOpen"
     class="site-header"
-    @keydown.esc="closeMenu"
   >
     <nav
       class="section-shell nav-shell"
@@ -79,44 +81,14 @@ onBeforeUnmount(() => {
       </div>
       <div class="nav-controls">
         <button
-          class="motion-toggle"
-          :aria-pressed="paused"
-          :disabled="reducedMotion"
-          :aria-label="
-            reducedMotion
-              ? 'Reduced motion enabled by your system'
-              : paused
-                ? 'Resume motion'
-                : 'Pause motion'
-          "
-          @click="toggleMotion"
-        >
-          <span aria-hidden="true">{{ paused || reducedMotion ? '▷' : 'Ⅱ' }}</span><span class="motion-label">{{
-            reducedMotion ? 'Reduced motion' : paused ? 'Resume motion' : 'Pause motion'
-          }}</span>
-        </button>
-        <button
           ref="toggle"
-          class="menu-toggle"
-          :aria-expanded="mobileOpen"
-          aria-controls="mobile-navigation"
-          :aria-label="mobileOpen ? 'Close menu' : 'Open menu'"
-          @click="mobileOpen = !mobileOpen"
+          class="globe-menu-toggle"
+          :aria-expanded="menuOpen"
+          aria-controls="globe-menu"
+          @click="toggleMenu"
         >
-          {{ mobileOpen ? 'Close −' : 'Menu +' }}
-        </button>
-      </div>
-      <div
-        v-if="mobileOpen"
-        id="mobile-navigation"
-        class="mobile-menu"
-      >
-        <button
-          v-for="link in links"
-          :key="link"
-          @click="navigate(link.toLowerCase())"
-        >
-          {{ link }} <span aria-hidden="true">↗</span>
+          <span aria-hidden="true">{{ menuOpen ? '−' : '⊕' }}</span>
+          {{ menuOpen ? 'Close menu' : 'Menu' }}
         </button>
       </div>
     </nav>

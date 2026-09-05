@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import PortfolioWorld from './visuals/PortfolioWorld.vue'
+import { createDestinations, type DestinationRequest, type WorldUpdate, type TravelPhase } from './visuals/destinations'
 import { useMotion } from '@/composables/useMotion'
 import {
   orderedProjects,
@@ -40,96 +41,213 @@ const scenes: Scene[] = [
   { kind: 'contact', section: 'contact', label: 'Get in touch' },
 ]
 const { motionEnabled } = useMotion()
+const menuOpen = ref(false)
+const world = ref<InstanceType<typeof PortfolioWorld>>()
+const sectionLabels = ['Introduction', 'Projects', 'About', 'Experience', 'Contact']
+function setMenu(open: boolean) {
+  clearTimeout(revealTimer)
+  menuOpen.value = open
+  focusOnEnter = false
+  contentVisible.value = false
+  document.documentElement.classList.toggle('globe-menu-open', open)
+  window.dispatchEvent(new CustomEvent('portfolio:menuchange', { detail: open }))
+  if (open) void nextTick(() => document.querySelector<HTMLElement>('.globe-menu-close')?.focus())
+  if (!open && !worldReady.value) void arrive(destination.value)
+}
+function closeMenu() {
+  setMenu(false)
+  void nextTick(() => document.querySelector<HTMLElement>('.globe-menu-toggle')?.focus())
+}
+function menuEvent(event: Event) { setMenu((event as CustomEvent<boolean>).detail) }
+function selectSection(index: number) {
+  setMenu(false)
+  goTo(sectionCards.value[index])
+}
+function menuTargetStyle(index: number) {
+  const point = projection.value?.panels[destinations[index].id]
+  return { left: `${point?.x ?? 0}px`, top: `${point?.y ?? 0}px` }
+}
 const track = ref<HTMLElement>()
-const viewport = ref<HTMLElement>()
+const footer = ref<HTMLElement>()
+const footerHeight = ref(window.innerWidth < 768 ? 70 : 80)
+let footerObserver: ResizeObserver | undefined
+const viewports = ref<HTMLElement[]>([])
+const viewport = computed(() => viewports.value[displayedGroup.value])
 const activeIndex = ref(0)
-const scrollProgress = ref(0)
+const displayedIndex = ref(0)
+const revision = ref(0)
+const contentVisible = ref(true)
+const phase = ref<TravelPhase>('focused')
+const projection = ref<WorldUpdate>()
+const announcement = ref('')
+const sectionIds = [...new Set(scenes.map((scene) => scene.section))]
+const destinations = createDestinations(sectionIds)
+const sectionCards = ref(sectionIds.map((id) => scenes.findIndex((scene) => scene.section === id)))
+const activeGroup = computed(() => sectionIds.indexOf(scenes[activeIndex.value].section))
+const displayedGroup = computed(() => sectionIds.indexOf(scenes[displayedIndex.value].section))
+const destination = computed(() => ({ id: scenes[activeIndex.value].section, revision: revision.value }))
 const worldReady = ref(false)
 const height = ref(window.innerHeight)
-const narrow = ref(window.innerWidth < 768)
 const stride = computed(() => Math.max(450, height.value * 0.75))
 const trackHeight = computed(() => `${height.value + (scenes.length - 1) * stride.value}px`)
-const active = computed(() => scenes[activeIndex.value])
-const project = computed(() => orderedProjects[active.value.item ?? 0])
-const experience = computed(() => experiences[active.value.item ?? 0])
-const worldView = computed(() => ({
-  kind: active.value.kind,
-  item: active.value.item,
-  imageSrc: active.value.kind === 'project' ? project.value.imageSrc : undefined,
+const active = computed(() => scenes[displayedIndex.value])
+const panels = computed(() => sectionCards.value.map((index) => {
+  const scene = scenes[index]
+  return { scene, project: orderedProjects[scene.item ?? 0], experience: experiences[scene.item ?? 0] }
 }))
+function setViewport(el: unknown, index: number) {
+  viewports.value[index] = el as HTMLElement
+}
+function panelStyle(index: number) {
+  const update = projection.value
+  const panel = update?.panels[destinations[index].id]
+  if (!worldReady.value || !update || !panel) return {
+    opacity: index === displayedGroup.value ? 1 : 0,
+    transform: 'none', zIndex: index === displayedGroup.value ? 10 : 1,
+  }
+  return {
+    opacity: panel.visible ? 1 : 0,
+    transform: `translate3d(${panel.x - update.anchor.x}px, ${panel.y - update.anchor.y + 28 * (panel.scale - 1)}px, 0) scale(${panel.scale})`,
+    zIndex: index === activeGroup.value ? 10000 : Math.round(1000 / panel.depth),
+  }
+}
 let scrollFrame = 0
 let lastStride = stride.value
 let focusOnEnter = false
+let revealTimer: ReturnType<typeof setTimeout> | undefined
 function focusScene() {
   if (!focusOnEnter) return
   viewport.value?.querySelector<HTMLElement>('section')?.focus({ preventScroll: true })
   focusOnEnter = false
 }
 
+function requestScene(index: number, focus = false) {
+  focusOnEnter = focus
+  if (index === activeIndex.value) {
+    if (contentVisible.value) focusScene()
+    return
+  }
+  clearTimeout(revealTimer)
+  const sameSection = scenes[index].section === scenes[activeIndex.value].section
+  const stayingFocused = sameSection && phase.value === 'focused'
+  activeIndex.value = index
+  sectionCards.value[activeGroup.value] = index
+  revision.value++
+  // Cards within a section change in place; the globe only travels between sections.
+  contentVisible.value = stayingFocused
+  if (stayingFocused) displayedIndex.value = index
+  else if (!sameSection) phase.value = 'retreat'
+}
+function worldUpdate(update: WorldUpdate) {
+  if (update.id !== destination.value.id || update.revision !== revision.value) return
+  projection.value = update
+  phase.value = update.phase
+}
+async function arrive(arrival: DestinationRequest) {
+  if (menuOpen.value) return
+  if (arrival.id !== destination.value.id || arrival.revision !== revision.value) return
+  clearTimeout(revealTimer)
+  displayedIndex.value = activeIndex.value
+  phase.value = 'focused'
+  contentVisible.value = true
+  await nextTick()
+  if (arrival.revision !== revision.value) return
+  if (viewport.value) viewport.value.scrollTop = 0
+  const complete = () => {
+    if (arrival.revision !== revision.value || !contentVisible.value) return
+    announcement.value = `${active.value.label}, scene ${displayedIndex.value + 1} of ${scenes.length}.`
+    announceSection()
+    focusScene()
+  }
+  if (motionEnabled.value && worldReady.value) revealTimer = setTimeout(complete, 180)
+  else complete()
+}
+
 function updateScene() {
   scrollFrame = 0
-  if (!track.value) return
+  if (!track.value || menuOpen.value) return
   const start = track.value.getBoundingClientRect().top + window.scrollY
   const position = (window.scrollY - start) / stride.value
-  activeIndex.value = Math.max(0, Math.min(scenes.length - 1, Math.round(position)))
-  scrollProgress.value = position - activeIndex.value
+  const index = Math.max(0, Math.min(scenes.length - 1, Math.round(position)))
+  if (index !== activeIndex.value) requestScene(index)
 }
 function onScroll() {
   if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScene)
 }
-function goTo(index: number) {
+function goTo(index: number, focus = true) {
+  if (menuOpen.value) setMenu(false)
   if (!track.value) return
   const next = Math.max(0, Math.min(scenes.length - 1, index))
   const start = track.value.getBoundingClientRect().top + window.scrollY
-  // The viewport is stationary; the scene's dissolve supplies the transition.
+  requestScene(next, focus)
   window.scrollTo({ top: start + next * stride.value, behavior: 'instant' })
-  activeIndex.value = next
-  scrollProgress.value = 0
 }
 function navigate(event: Event) {
   const id = (event as CustomEvent<string>).detail
   const index = scenes.findIndex((scene) => scene.section === id)
   if (index >= 0) {
-    focusOnEnter = true
-    if (index === activeIndex.value) focusScene()
     goTo(index)
   }
 }
 function keydown(event: KeyboardEvent) {
+  if (menuOpen.value) {
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      closeMenu()
+    } else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+      event.preventDefault()
+      world.value?.rotate(event.key === 'ArrowLeft' ? -35 : event.key === 'ArrowRight' ? 35 : 0,
+        event.key === 'ArrowUp' ? -35 : event.key === 'ArrowDown' ? 35 : 0)
+    }
+    return
+  }
   const target = event.target as HTMLElement
   if (target.closest('button, a, input, textarea, select, [contenteditable]')) return
-  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+  if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(event.key)) {
     event.preventDefault()
-    goTo(activeIndex.value + (event.key === 'ArrowRight' ? 1 : -1))
+    goTo(activeIndex.value + (event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1))
   }
 }
 async function resize() {
   const current = activeIndex.value
   height.value = window.innerHeight
-  narrow.value = window.innerWidth < 768
   if (lastStride !== stride.value) {
     lastStride = stride.value
     await nextTick()
-    goTo(current)
+    if (!menuOpen.value) goTo(current, false)
+    else if (track.value) {
+      const start = track.value.getBoundingClientRect().top + window.scrollY
+      window.scrollTo({ top: start + current * stride.value, behavior: 'instant' })
+    }
   }
 }
 function announceSection() {
   window.dispatchEvent(new CustomEvent('portfolio:sectionchange', { detail: active.value.section }))
 }
-watch(activeIndex, async () => {
-  announceSection()
-  await nextTick()
-  if (viewport.value) viewport.value.scrollTop = 0
+watch(motionEnabled, (enabled) => {
+  if (!enabled && contentVisible.value) {
+    clearTimeout(revealTimer)
+    void arrive(destination.value)
+  }
 })
 onMounted(() => {
+  footerObserver = new ResizeObserver(() => {
+    if (footer.value?.offsetHeight) footerHeight.value = footer.value.offsetHeight
+  })
+  if (footer.value) footerObserver.observe(footer.value)
   window.addEventListener('scroll', onScroll, { passive: true })
   window.addEventListener('resize', resize, { passive: true })
   window.addEventListener('portfolio:navigate', navigate)
+  window.addEventListener('portfolio:menu', menuEvent)
   window.addEventListener('keydown', keydown)
   updateScene()
   announceSection()
 })
 onBeforeUnmount(() => {
+  footerObserver?.disconnect()
+  document.documentElement.classList.remove('globe-menu-open')
+  window.removeEventListener('portfolio:menu', menuEvent)
+  clearTimeout(revealTimer)
   cancelAnimationFrame(scrollFrame)
   window.removeEventListener('scroll', onScroll)
   window.removeEventListener('resize', resize)
@@ -142,14 +260,16 @@ onBeforeUnmount(() => {
   <div
     ref="track"
     class="portfolio-track"
-    :style="{ height: trackHeight }"
+    :style="{ height: trackHeight, '--stage-footer-height': `${footerHeight}px` }"
   >
     <div
       class="portfolio-stage"
-      :data-scene="activeIndex"
+      :data-scene="displayedIndex"
+      :data-requested-scene="activeIndex"
+      :data-phase="phase"
       :data-section="active.section"
       :data-kind="active.kind"
-      :class="{ 'world-ready': worldReady }"
+      :class="{ 'world-ready': worldReady, 'is-menu-open': menuOpen }"
     >
       <div
         class="stage-ambient"
@@ -157,33 +277,95 @@ onBeforeUnmount(() => {
       />
       <div
         class="stage-world"
-        :class="{ 'world-secondary': active.kind !== 'hero' && active.kind !== 'project' }"
       >
         <PortfolioWorld
-          :view="worldView"
+          ref="world"
+          :overview="menuOpen"
+          :destinations="destinations"
+          :destination="destination"
           :motion-enabled="motionEnabled"
-          :scroll-progress="scrollProgress"
           @ready="worldReady = $event"
+          @update="worldUpdate"
+          @arrival="arrive"
         />
       </div>
       <div
-        ref="viewport"
-        class="stage-viewport"
+        v-if="menuOpen"
+        id="globe-menu"
+        class="globe-menu"
+        role="region"
+        aria-label="Globe section menu"
       >
-        <Transition
-          name="scene"
-          mode="out-in"
-          @after-enter="focusScene"
+        <button
+          class="globe-menu-close"
+          aria-label="Close menu"
+          @click="closeMenu"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <div
+          v-if="!worldReady"
+          class="globe-fallback-menu"
+          aria-label="Choose a section"
+        >
+          <button
+            v-for="(label, index) in sectionLabels"
+            :key="label"
+            @click="selectSection(index)"
+          >
+            {{ label }}
+          </button>
+        </div>
+        <div class="globe-menu-heading">
+          <p class="eyebrow">
+            Five places to explore
+          </p>
+          <h2>Choose your next stop.</h2>
+          <p>{{ worldReady ? 'One turn per minute · Drag to spin · Select a section' : 'Choose a section below to explore.' }}</p>
+        </div>
+        <template
+          v-for="(section, index) in destinations"
+          :key="section.id"
+        >
+          <button
+            v-if="worldReady && projection?.panels[section.id]?.visible"
+            class="globe-destination-button"
+            :style="menuTargetStyle(index)"
+            :aria-label="`Open ${sectionLabels[index]}`"
+            @click="selectSection(index)"
+          >
+            <span>{{ sectionLabels[index] }}</span><i aria-hidden="true" />
+          </button>
+        </template>
+      </div>
+      <div
+        v-for="({ scene: panelScene, project, experience }, panelIndex) in panels"
+        :key="destinations[panelIndex].id"
+        class="destination-panel"
+        :class="{ 'is-focused': contentVisible && panelIndex === displayedGroup }"
+        :style="panelStyle(panelIndex)"
+        :data-destination="destinations[panelIndex].id"
+        :inert="!(contentVisible && panelIndex === displayedGroup) || undefined"
+        :aria-hidden="!(contentVisible && panelIndex === displayedGroup) || undefined"
+      >
+        <div
+          class="destination-anchor is-visible"
+          aria-hidden="true"
+        >
+          <span />
+        </div>
+        <div
+          :ref="(el) => setViewport(el, panelIndex)"
+          class="stage-viewport"
         >
           <section
-            :id="active.section"
-            :key="activeIndex"
+            :id="panelIndex === displayedGroup ? panelScene.section : undefined"
             tabindex="-1"
             class="stage-scene section-shell"
-            :class="`scene-${active.kind}`"
-            :aria-label="active.label"
+            :class="`scene-${panelScene.kind}`"
+            :aria-label="panelScene.label"
           >
-            <template v-if="active.kind === 'hero'">
+            <template v-if="panelScene.kind === 'hero'">
               <div class="stage-hero-copy">
                 <p class="eyebrow">
                   Samuel Jarai <span class="eyebrow-divider">/</span> AI Engineer
@@ -212,27 +394,46 @@ onBeforeUnmount(() => {
                   <span class="status-dot" /><span>AI Engineer at <strong>Econet Wireless</strong></span>
                 </div>
               </div>
-              <div class="stage-core">
-                <div class="visual-topline">
-                  <span class="label-mono">Intelligence, engineered.</span><span
-                    class="cross-mark"
-                    aria-hidden="true"
-                  >+</span>
+              <aside
+                class="intro-profile"
+                aria-label="Meet Samuel"
+              >
+                <div class="intro-identity">
+                  <img
+                    :src="profileImage"
+                    alt="Samuel Jarai"
+                    width="112"
+                    height="112"
+                  >
+                  <div>
+                    <p class="label-mono">
+                      The person behind the systems
+                    </p><h3>Samuel Jarai</h3><p>AI Engineer · Harare, Zimbabwe</p>
+                  </div>
                 </div>
-                <div
-                  class="stage-world-space"
-                  aria-hidden="true"
-                />
-                <div class="core-caption">
-                  <span class="core-caption-line" /><span>AI SYSTEMS <b>×</b> HUMAN INTENT</span><span class="core-caption-line" />
+                <div class="intro-statement">
+                  From the first idea<br>to <span>something people use.</span>
                 </div>
-              </div>
+                <p class="body-text">
+                  AI products, developer tools, and the cloud infrastructure that connects them. Built with a full-stack engineering mindset.
+                </p>
+                <div class="intro-facts">
+                  <div><strong>{{ orderedProjects.length.toString().padStart(2, '0') }}</strong><span>Selected projects</span></div>
+                  <div><strong>AI + Cloud</strong><span>From prototype to production</span></div>
+                </div>
+                <button
+                  class="btn-ghost"
+                  @click="goTo(scenes.findIndex((scene) => scene.section === 'about'))"
+                >
+                  Meet the engineer <span aria-hidden="true">↗</span>
+                </button>
+              </aside>
             </template>
-            <template v-else-if="active.kind === 'project'">
+            <template v-else-if="panelScene.kind === 'project'">
               <div class="scene-copy">
                 <p class="section-number">
                   01 / Selected work
-                  <span class="scene-item-count">{{ String((active.item ?? 0) + 1).padStart(2, '0') }} / 09</span>
+                  <span class="scene-item-count">{{ String((panelScene.item ?? 0) + 1).padStart(2, '0') }} / 09</span>
                 </p>
                 <span class="stage-project-category">{{ categories[project.title] }}</span>
                 <h2 class="scene-title">
@@ -268,9 +469,6 @@ onBeforeUnmount(() => {
                 target="_blank"
                 rel="noopener noreferrer"
                 class="stage-project-image"
-                :class="{ 'world-image-fallback': worldReady && !narrow }"
-                :aria-hidden="worldReady && !narrow ? true : undefined"
-                :tabindex="worldReady && !narrow ? -1 : undefined"
                 :aria-label="`View ${project.title} repository`"
               ><div class="project-image-toolbar">
                  <span
@@ -286,7 +484,7 @@ onBeforeUnmount(() => {
                   class="stage-image-caption"
                 >{{ project.tech.join(' / ') }}<span aria-hidden="true">↗</span></span></a>
             </template>
-            <template v-else-if="active.kind === 'profile'">
+            <template v-else-if="panelScene.kind === 'profile'">
               <div class="scene-copy">
                 <span class="section-number">02 / The engineer</span>
                 <h2 class="scene-title">
@@ -342,7 +540,7 @@ onBeforeUnmount(() => {
                 </div>
               </div>
             </template>
-            <template v-else-if="active.kind === 'credentials'">
+            <template v-else-if="panelScene.kind === 'credentials'">
               <div class="scene-copy">
                 <span class="section-number">02 / Recognition & credentials</span>
                 <h2 class="scene-title">
@@ -380,10 +578,10 @@ onBeforeUnmount(() => {
                 </div>
               </div>
             </template>
-            <template v-else-if="active.kind === 'experience'">
+            <template v-else-if="panelScene.kind === 'experience'">
               <div class="scene-copy">
                 <span class="section-number">03 / The journey
-                  <span class="scene-item-count">0{{ (active.item ?? 0) + 1 }} / 04</span></span>
+                  <span class="scene-item-count">0{{ (panelScene.item ?? 0) + 1 }} / 04</span></span>
                 <p class="stage-project-category">
                   {{ experience.period }}
                 </p>
@@ -411,8 +609,8 @@ onBeforeUnmount(() => {
                   <button
                     v-for="(role, index) in experiences"
                     :key="role.company"
-                    :class="{ selected: active.item === index }"
-                    :aria-current="active.item === index ? 'step' : undefined"
+                    :class="{ selected: panelScene.item === index }"
+                    :aria-current="panelScene.item === index ? 'step' : undefined"
                     @click="goTo(scenes.findIndex((scene) => scene.kind === 'experience') + index)"
                   >
                     <span
@@ -459,11 +657,15 @@ onBeforeUnmount(() => {
               </div>
             </template>
           </section>
-        </Transition>
+        </div>
       </div>
-      <footer class="stage-footer section-shell">
+      <footer
+        v-show="!menuOpen"
+        ref="footer"
+        class="stage-footer section-shell"
+      >
         <div class="stage-position">
-          <span class="stage-current">{{ String(activeIndex + 1).padStart(2, '0') }}</span><span class="stage-total">/ {{ String(scenes.length).padStart(2, '0') }}</span><span class="stage-scene-label">{{ active.label }}</span>
+          <span class="stage-current">{{ String(activeIndex + 1).padStart(2, '0') }}</span><span class="stage-total">/ {{ String(scenes.length).padStart(2, '0') }}</span><span class="stage-scene-label">{{ scenes[activeIndex].label }}</span>
         </div>
         <div class="stage-scroll-hint">
           <span>{{ activeIndex === scenes.length - 1 ? 'Thanks for exploring.' : 'Scroll to continue' }}</span><span
@@ -488,6 +690,7 @@ onBeforeUnmount(() => {
         </div>
       </footer>
       <div
+        v-show="!menuOpen"
         class="stage-progress"
         aria-hidden="true"
       >
@@ -497,7 +700,7 @@ onBeforeUnmount(() => {
         class="sr-only"
         aria-live="polite"
       >
-        {{ active.label }}, scene {{ activeIndex + 1 }} of {{ scenes.length }}.
+        {{ announcement }}
       </p>
     </div>
   </div>

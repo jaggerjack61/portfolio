@@ -1,17 +1,21 @@
 import * as THREE from 'three'
 
-export type WorldView = { kind: string; item?: number; imageSrc?: string }
+import type { Destination, DestinationRequest, TravelPhase, WorldUpdate } from './destinations'
+
 export type NeuralScene = {
   setMotion: (enabled: boolean) => void
-  setView: (view: WorldView) => void
-  setScroll: (progress: number) => void
+  setOverview: (open: boolean) => void
+  rotate: (dx: number, dy: number) => void
+  setDestination: (request: DestinationRequest) => void
   dispose: () => void
 }
 
 export function createNeuralScene(
   host: HTMLElement,
   onFailure: () => void,
-  onViewReady: (ready: boolean) => void = () => {},
+  destinations: Destination[] = [],
+  onUpdate: (update: WorldUpdate) => void = () => {},
+  onArrival: (request: DestinationRequest) => void = () => {},
 ): NeuralScene {
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' })
   renderer.setClearColor(0x050a12, 0)
@@ -19,7 +23,6 @@ export function createNeuralScene(
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50)
   camera.position.z = 8.4
   const core = new THREE.Group()
-  core.rotation.set(0.2, 0, -0.22)
   scene.add(core)
   const geometries: THREE.BufferGeometry[] = []
   const materials: THREE.Material[] = []
@@ -31,8 +34,6 @@ export function createNeuralScene(
     materials.push(item)
     return item
   }
-  const pointerSurface = host.closest('.portfolio-stage') ?? host
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)')
   const mobile = window.matchMedia('(max-width: 767px)')
   const cyan = new THREE.Color('#54e5ff')
 
@@ -222,171 +223,198 @@ export function createNeuralScene(
   )
   scene.add(ambient)
 
-  const heroAssembly = new THREE.Group()
-  heroAssembly.add(core, orbits, glow)
-  scene.add(heroAssembly)
-
-  // Project screenshots are real textured surfaces in the same world as the neural core.
-  const screenAssembly = new THREE.Group()
-  const screenMaterial = material(
-    new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false, side: THREE.DoubleSide }),
-  )
-  const screen = new THREE.Mesh(geometry(new THREE.PlaneGeometry(1, 1)), screenMaterial)
-  screen.position.z = 0.081
-  const chassis = new THREE.Mesh(
-    geometry(new THREE.BoxGeometry(1, 1, 1)),
-    material(new THREE.MeshBasicMaterial({ color: 0x102331 })),
-  )
-  const chassisEdges = new THREE.LineSegments(
-    geometry(new THREE.EdgesGeometry(geometry(new THREE.BoxGeometry(1, 1, 1)))),
-    material(new THREE.LineBasicMaterial({ color: 0x54e5ff, transparent: true, opacity: 0.65 })),
-  )
-  const rearFrame = new THREE.LineSegments(
-    geometry(new THREE.EdgesGeometry(geometry(new THREE.BoxGeometry(1, 1, 1)))),
-    material(new THREE.LineBasicMaterial({ color: 0x54e5ff, transparent: true, opacity: 0.18 })),
-  )
-  rearFrame.position.set(0.12, -0.08, -0.45)
-  screenAssembly.add(chassis, chassisEdges, rearFrame, screen)
-  screenAssembly.visible = false
-  scene.add(screenAssembly)
-  const grid = new THREE.GridHelper(7, 18, 0x285565, 0x17303c)
-  grid.rotation.x = Math.PI / 2
-  grid.position.z = -1.3
-  ;(grid.material as THREE.Material).transparent = true
-  ;(grid.material as THREE.Material).opacity = 0.3
-  geometries.push(grid.geometry)
-  materials.push(...(Array.isArray(grid.material) ? grid.material : [grid.material]))
-  screenAssembly.add(grid)
-
-  const textureCache = new Map<string, THREE.Texture>()
-  const textureLoader = new THREE.TextureLoader()
-  let viewRevision = 0
-  let flight = 0
-  let theta = -0.85
-  let elevation = 0.2
-  let radius = 11
-  let from = { theta, elevation, radius }
-  let destination = { theta: 0.12, elevation: 0.025, radius: 8.7 }
-  let direction = 1
-  let scrollOrbit = 0
-  let currentScroll = 0
-  let idleTime = 0
-
-  function frameTexture(texture: THREE.Texture) {
-    const source = texture.image as { width: number; height: number }
-    const aspect = source.width / source.height
-    const width = Math.min(4.65, 3.3 * aspect)
-    const height = width / aspect
-    screen.scale.set(width, height, 1)
-    chassis.scale.set(width + 0.15, height + 0.15, 0.15)
-    chassisEdges.scale.copy(chassis.scale)
-    rearFrame.scale.set(width + 0.4, height + 0.4, 0.1)
-    screenMaterial.map = texture
-    screenMaterial.needsUpdate = true
-    screenAssembly.visible = true
-    onViewReady(true)
-    if (!enabled) render(0)
-  }
-  function setView(next: WorldView) {
-    if (disposed || failed) return
-    const revision = ++viewRevision
-    from =
-      revision === 1 && enabled ? { theta: -0.95, elevation: 0.22, radius: 12 } : { theta, elevation, radius }
-    direction = (next.item ?? 0) % 2 ? -1 : 1
-    destination =
-      next.kind === 'project'
-        ? { theta: direction * 0.12, elevation: 0.055, radius: 8.25 }
-        : {
-            theta: next.kind === 'hero' ? 0.12 : direction * 0.48,
-            elevation: next.kind === 'hero' ? 0.025 : 0.13,
-            radius: next.kind === 'hero' ? 8.7 : 9.5,
-          }
-    flight = enabled ? 0 : 1
-    heroAssembly.visible = next.kind !== 'project'
-    screenAssembly.visible = false
-    if (next.kind === 'project' && next.imageSrc) {
-      onViewReady(false)
-      const cached = textureCache.get(next.imageSrc)
-      if (cached) frameTexture(cached)
-      else
-        textureLoader.load(
-          next.imageSrc,
-          (texture) => {
-            if (disposed || failed || revision !== viewRevision) {
-              texture.dispose()
-              return
-            }
-            texture.colorSpace = THREE.SRGBColorSpace
-            texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy())
-            textureCache.set(next.imageSrc!, texture)
-            frameTexture(texture)
-            // Keep a bounded set of GPU textures while visitors browse projects.
-            while (textureCache.size > 3) {
-              const oldest = textureCache.keys().next().value!
-              textureCache.get(oldest)?.dispose()
-              textureCache.delete(oldest)
-            }
-          },
-          undefined,
-          () => {
-            if (!disposed && revision === viewRevision) onViewReady(false)
-          },
-        )
-    } else onViewReady(true)
-    if (!enabled) render(0)
-  }
-
+  const dots = destinations.map((destination) => {
+    const dot = new THREE.Mesh(
+      geometry(new THREE.SphereGeometry(1, 16, 12)),
+      material(new THREE.MeshBasicMaterial({ color: cyan })),
+    )
+    dot.position.fromArray(destination.position).multiplyScalar(1.53)
+    core.add(dot)
+    return dot
+  })
+  let request: DestinationRequest | undefined
+  let phase: TravelPhase = 'focused'
+  let overview = false
+  const overviewFov = 40
+  const focusedFov = 18
+  let elapsed = 0
   let enabled = false
   let visible = true
   let failed = false
   let disposed = false
   let lastTime = 0
   let running = false
-  const target = new THREE.Vector2()
-  const current = new THREE.Vector2()
-  function render(time: number) {
-    const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 0
-    lastTime = time
-    if (enabled) {
-      flight = Math.min(1, flight + dt / 1.8)
-      idleTime += dt
-      current.lerp(target, 1 - Math.exp(-dt * 3))
-      currentScroll += (scrollOrbit - currentScroll) * (1 - Math.exp(-dt * 4))
-      core.rotation.y += dt * 0.055
-      core.rotation.x = 0.2 + current.y * 0.06
-      orbits.children.forEach((orbit, i) => {
-        orbit.rotation.z += dt * (i % 2 ? -1 : 1) * (0.025 + i * 0.01)
-      })
-      ambient.rotation.z += dt * 0.006
-    } else flight = 1
-    const ease = flight * flight * (3 - 2 * flight)
-    const arc = Math.sin(flight * Math.PI)
-    theta =
-      THREE.MathUtils.lerp(from.theta, destination.theta, ease) +
-      (enabled
-        ? arc * direction * 0.68 +
-          currentScroll * 0.32 +
-          current.x * 0.065 +
-          Math.sin(idleTime * 0.16) * 0.025
-        : 0)
-    elevation =
-      THREE.MathUtils.lerp(from.elevation, destination.elevation, ease) +
-      (enabled ? arc * 0.13 + current.y * 0.035 : 0)
-    radius = THREE.MathUtils.lerp(from.radius, destination.radius, ease) + (enabled ? arc * 1.05 : 0)
-    camera.position.set(
-      Math.sin(theta) * Math.cos(elevation) * radius,
-      Math.sin(elevation) * radius,
-      Math.cos(theta) * Math.cos(elevation) * radius,
-    )
+  let focusDistance = 5
+  let retreatDistance = 10
+  let distance = focusDistance
+  let fromDistance = distance
+  let framing = 1
+  let fromFraming = framing
+  const fromRotation = new THREE.Quaternion()
+  const targetRotation = new THREE.Quaternion()
+  const focusNormal = new THREE.Vector3()
+  const framingNormal = new THREE.Vector3()
+  // Each arrival looks at a different region, rather than always the globe's center.
+  const focusRegions = [
+    [-0.5, 0.5], [0, -0.6], [0.55, 0.25], [-0.55, -0.3],
+    [0.2, 0.6],
+  ]
+  const projected = new THREE.Vector3()
+  const overviewTurnMs = 60_000
+  const worldUp = new THREE.Vector3(0, 1, 0)
+  const overviewRotation = new THREE.Quaternion()
+  const duration = { retreat: 380, rotate: 650, approach: 900 }
+  const ease = (t: number) => t * t * (3 - 2 * t)
+
+  function begin(next: TravelPhase) {
+    phase = next
+    if (next === 'rotate' || next === 'focused') framingNormal.copy(focusNormal)
+    elapsed = 0
+    fromDistance = distance
+    fromFraming = framing
+    fromRotation.copy(core.quaternion)
+  }
+  function settle() {
+    core.quaternion.copy(targetRotation)
+    distance = focusDistance
+    framing = 1
+    begin('focused')
+    draw()
+    if (request && !failed) onArrival({ ...request })
+  }
+  function settleOverview() {
+    distance = retreatDistance
+    framing = 0
+    begin('overview')
+    draw()
+  }
+  function setOverview(open: boolean) {
+    if (disposed || failed || overview === open) return
+    overview = open
+    if (open) {
+      if (enabled) begin('retreat')
+      else settleOverview()
+    } else if (!enabled) settle()
+    else if (phase !== 'retreat') begin('rotate')
+    draw()
+  }
+  function rotate(dx: number, dy: number) {
+    if (!overview || disposed || failed) return
+    if (phase !== 'overview') settleOverview()
+    const rotation = new THREE.Quaternion().setFromEuler(new THREE.Euler(dy * 0.006, dx * 0.006, 0, 'YXZ'))
+    core.quaternion.premultiply(rotation).normalize()
+    draw()
+  }
+  function setDestination(next: DestinationRequest) {
+    if (disposed || failed) return
+    const index = destinations.findIndex((item) => item.id === next.id)
+    if (index < 0) return
+    const same = request?.id === next.id
+    const initial = !request
+    request = { ...next }
+    const [focusX, focusY] = focusRegions[index % focusRegions.length]
+    focusNormal.set(focusX, focusY, Math.sqrt(1 - focusX * focusX - focusY * focusY))
+    targetRotation.setFromUnitVectors(new THREE.Vector3().fromArray(destinations[index].position), focusNormal)
+    dots.forEach((dot, i) => {
+      dot.material.color.set(i === index ? 0xffffff : cyan)
+    })
+    if (overview) {
+      if (!enabled) settleOverview()
+    } else if (initial || !enabled) settle()
+    else if (same && phase === 'focused') settle()
+    else if (!same) {
+      if (phase === 'rotate') begin('rotate')
+      else if (phase !== 'retreat') begin('retreat')
+    }
+    draw()
+  }
+  function draw() {
+    if (disposed || failed) return
+    camera.fov = THREE.MathUtils.lerp(overviewFov, focusedFov, framing)
+    camera.updateProjectionMatrix()
+    camera.position.set(0, 0, distance)
     camera.lookAt(0, 0, 0)
-    screenAssembly.position.y = enabled ? Math.sin(idleTime * 0.4) * 0.025 : 0
-    screenAssembly.rotation.z = enabled ? Math.sin(idleTime * 0.25) * 0.006 : 0
-    screenAssembly.scale.setScalar(0.94 + ease * 0.06)
+    // Off-axis framing keeps the front destination directly above the HTML panel.
+    const stage = host.closest<HTMLElement>('.portfolio-stage')
+    const anchor = stage ? parseFloat(getComputedStyle(stage).paddingTop) - 28 : host.clientHeight * 0.3
+    const anchorX = host.clientWidth * 0.72
+    const ndcY = 1 - (2 * anchor) / Math.max(1, host.clientHeight)
+    const projectedDepth = distance - framingNormal.z * 1.53
+    const projectionScale = 1.53 / (projectedDepth * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)))
+    const regionX = framingNormal.x * projectionScale / camera.aspect
+    const regionY = framingNormal.y * projectionScale
+    camera.setViewOffset(host.clientWidth, host.clientHeight,
+      framing * (regionX + 1 - 2 * anchorX / host.clientWidth) * host.clientWidth / 2,
+      framing * (ndcY - regionY) * host.clientHeight / 2, host.clientWidth, host.clientHeight)
+    core.updateMatrixWorld(true)
+    dots.forEach((dot, index) => {
+      dot.getWorldPosition(projected)
+      const pixels = destinations[index].id === request?.id ? 6 : 3
+      const worldPerPixel = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) *
+        (distance - projected.z) / Math.max(1, host.clientHeight)
+      dot.scale.setScalar(pixels * worldPerPixel)
+    })
     try {
       renderer.render(scene, camera)
+      if (request) {
+        const index = destinations.findIndex((item) => item.id === request!.id)
+        dots[index].getWorldPosition(projected)
+        projected.project(camera)
+        const dot = { x: (projected.x + 1) * host.clientWidth / 2, y: (1 - projected.y) * host.clientHeight / 2 }
+        const panels = Object.fromEntries(dots.map((marker, i) => {
+          marker.getWorldPosition(projected)
+          const depth = distance - projected.z
+          const visible = projected.z * distance > 1.53 * 1.53
+          const [x, y] = focusRegions[i % focusRegions.length]
+          const focusedDepth = focusDistance - 1.53 * Math.sqrt(1 - x * x - y * y)
+          projected.project(camera)
+          return [destinations[i].id, {
+            x: (projected.x + 1) * host.clientWidth / 2,
+            y: (1 - projected.y) * host.clientHeight / 2,
+            scale: Math.min(1.25, focusedDepth / depth * Math.tan(THREE.MathUtils.degToRad(focusedFov / 2)) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))), visible, depth,
+          }]
+        }))
+        onUpdate({ ...request, phase, dot, panels, anchor: { x: anchorX, y: anchor } })
+      }
     } catch {
       fail()
     }
+  }
+  function render(time: number) {
+    const elapsedMs = lastTime && time ? Math.max(0, time - lastTime) : 0
+    const dt = Math.min(elapsedMs, 50)
+    lastTime = time
+    if (enabled) {
+      if (phase !== 'focused' && phase !== 'overview') {
+        elapsed += dt
+        const t = Math.min(1, elapsed / duration[phase])
+        const eased = ease(t)
+        if (phase === 'retreat') {
+          distance = THREE.MathUtils.lerp(fromDistance, retreatDistance, eased)
+          framing = THREE.MathUtils.lerp(fromFraming, 0, eased)
+        } else if (phase === 'rotate') {
+          core.quaternion.slerpQuaternions(fromRotation, targetRotation, eased)
+        } else {
+          distance = THREE.MathUtils.lerp(fromDistance, focusDistance, eased)
+          framing = THREE.MathUtils.lerp(fromFraming, 1, eased)
+        }
+        if (t === 1) {
+          if (phase === 'retreat') begin(overview ? 'overview' : 'rotate')
+          else if (phase === 'rotate') begin('approach')
+          else settle()
+        }
+      }
+      if (phase === 'overview') {
+        // Use elapsed time so a full menu turn stays 60 seconds even at low frame rates.
+        overviewRotation.setFromAxisAngle(worldUp, (elapsedMs % overviewTurnMs) * Math.PI * 2 / overviewTurnMs)
+        core.quaternion.premultiply(overviewRotation).normalize()
+      }
+      orbits.children.forEach((orbit, i) => {
+        orbit.rotation.z += dt / 1000 * (i % 2 ? -1 : 1) * (0.025 + i * 0.01)
+      })
+      ambient.rotation.z += dt / 1000 * 0.006
+    }
+    draw()
   }
   function sync() {
     if (disposed || failed) return
@@ -396,7 +424,7 @@ export function createNeuralScene(
       lastTime = 0
       renderer.setAnimationLoop(shouldRun ? render : null)
     }
-    if (!shouldRun && visible && !document.hidden) render(0)
+    if (!shouldRun && visible && !document.hidden) draw()
   }
   function resize() {
     if (disposed || failed) return
@@ -411,18 +439,20 @@ export function createNeuralScene(
     ambientGeometry.setDrawRange(0, mobile.matches ? 65 : 160)
     camera.aspect = width / height
     camera.updateProjectionMatrix()
-    if (visible && !document.hidden) render(0)
-  }
-  function pointer(event: PointerEvent) {
-    if (!enabled || !finePointer.matches) return
-    const bounds = host.getBoundingClientRect()
-    target.set(
-      THREE.MathUtils.clamp(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -1, 1),
-      THREE.MathUtils.clamp(-(((event.clientY - bounds.top) / bounds.height) * 2 - 1), -1, 1),
-    )
-  }
-  function resetPointer() {
-    target.set(0, 0)
+    const halfFov = THREE.MathUtils.degToRad(overviewFov / 2)
+    const limitingFov = Math.min(halfFov, Math.atan(Math.tan(halfFov) * camera.aspect))
+    // Include the outermost ring and ticks, with breathing room, at every aspect ratio.
+    const headerHeight = document.querySelector('.site-header')?.getBoundingClientRect().height ?? 0
+    const footerHeight = host.closest('.portfolio-stage')?.querySelector('.stage-footer')?.getBoundingClientRect().height ?? 0
+    const usableHeight = Math.max(100, height - headerHeight - footerHeight - 32)
+    const travelHalfFov = Math.min(limitingFov, Math.atan(Math.tan(halfFov) * usableHeight / height))
+    retreatDistance = 2.95 / Math.sin(travelHalfFov)
+    focusDistance = mobile.matches ? 2.4 : 2.25
+    distance = THREE.MathUtils.lerp(retreatDistance, focusDistance, framing)
+    fromDistance = distance
+    fromFraming = framing
+    if (phase === 'retreat' || phase === 'approach') elapsed = 0
+    if (visible && !document.hidden) draw()
   }
   function fail() {
     failed = true
@@ -440,19 +470,22 @@ export function createNeuralScene(
   })
   host.appendChild(renderer.domElement)
   renderer.domElement.addEventListener('webglcontextlost', contextLost)
-  pointerSurface.addEventListener('pointermove', pointer as EventListener)
-  pointerSurface.addEventListener('pointerleave', resetPointer)
   document.addEventListener('visibilitychange', sync)
   resizeObserver.observe(host)
+  const footer = host.closest('.portfolio-stage')?.querySelector('.stage-footer')
+  if (footer) resizeObserver.observe(footer)
   visibilityObserver.observe(host)
   resize()
   return {
-    setView,
-    setScroll(progress) {
-      scrollOrbit = Math.max(-0.5, Math.min(0.5, progress))
-    },
+    setDestination,
+    setOverview,
+    rotate,
     setMotion(value) {
       enabled = value
+      if (!enabled && request) {
+        if (overview) settleOverview()
+        else settle()
+      }
       sync()
     },
     dispose() {
@@ -460,14 +493,10 @@ export function createNeuralScene(
       renderer.setAnimationLoop(null)
       resizeObserver.disconnect()
       visibilityObserver.disconnect()
-      pointerSurface.removeEventListener('pointermove', pointer as EventListener)
-      pointerSurface.removeEventListener('pointerleave', resetPointer)
       document.removeEventListener('visibilitychange', sync)
       renderer.domElement.removeEventListener('webglcontextlost', contextLost)
       geometries.forEach((item) => item.dispose())
       materials.forEach((item) => item.dispose())
-      textureCache.forEach((texture) => texture.dispose())
-      textureCache.clear()
       renderer.dispose()
       renderer.domElement.remove()
     },
