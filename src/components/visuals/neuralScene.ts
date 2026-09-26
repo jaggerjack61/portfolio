@@ -263,12 +263,22 @@ export function createNeuralScene(
   const overviewTurnMs = 60_000
   const worldUp = new THREE.Vector3(0, 1, 0)
   const overviewRotation = new THREE.Quaternion()
-  const duration = { retreat: 380, rotate: 650, approach: 900 }
+  // The turn overlaps the retreat and approach so travel reads as one continuous camera move.
+  const duration = { retreat: 420, rotate: 380, approach: 950 }
+  const turnDuration = 1150
+  const turnStart = 0.45
   const ease = (t: number) => t * t * (3 - 2 * t)
+  const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
+  const smootherstep = (t: number) => t * t * t * (t * (t * 6 - 15) + 10)
+  let turnElapsed = -1
 
+  function restartTurn() {
+    turnElapsed = -1
+  }
   function begin(next: TravelPhase) {
     phase = next
     if (next === 'rotate' || next === 'focused') framingNormal.copy(focusNormal)
+    if (next === 'retreat') restartTurn()
     elapsed = 0
     fromDistance = distance
     fromFraming = framing
@@ -295,7 +305,10 @@ export function createNeuralScene(
       if (enabled) begin('retreat')
       else settleOverview()
     } else if (!enabled) settle()
-    else if (phase !== 'retreat') begin('rotate')
+    else if (phase !== 'retreat') {
+      begin('rotate')
+      restartTurn()
+    }
     draw()
   }
   function rotate(dx: number, dy: number) {
@@ -325,6 +338,7 @@ export function createNeuralScene(
     else if (!same) {
       if (phase === 'rotate') begin('rotate')
       else if (phase !== 'retreat') begin('retreat')
+      restartTurn()
     }
     draw()
   }
@@ -388,15 +402,20 @@ export function createNeuralScene(
       if (phase !== 'focused' && phase !== 'overview') {
         elapsed += dt
         const t = Math.min(1, elapsed / duration[phase])
-        const eased = ease(t)
         if (phase === 'retreat') {
-          distance = THREE.MathUtils.lerp(fromDistance, retreatDistance, eased)
-          framing = THREE.MathUtils.lerp(fromFraming, 0, eased)
-        } else if (phase === 'rotate') {
-          core.quaternion.slerpQuaternions(fromRotation, targetRotation, eased)
-        } else {
-          distance = THREE.MathUtils.lerp(fromDistance, focusDistance, eased)
-          framing = THREE.MathUtils.lerp(fromFraming, 1, eased)
+          distance = THREE.MathUtils.lerp(fromDistance, retreatDistance, ease(t))
+          framing = THREE.MathUtils.lerp(fromFraming, 0, ease(t))
+        } else if (phase === 'approach') {
+          distance = THREE.MathUtils.lerp(fromDistance, focusDistance, smootherstep(t))
+          framing = THREE.MathUtils.lerp(fromFraming, 1, smootherstep(t))
+        }
+        if (!overview && (phase !== 'retreat' || t >= turnStart)) {
+          if (turnElapsed < 0) {
+            turnElapsed = 0
+            fromRotation.copy(core.quaternion)
+          } else turnElapsed += dt
+          core.quaternion.slerpQuaternions(fromRotation, targetRotation,
+            easeInOutCubic(Math.min(1, turnElapsed / turnDuration)))
         }
         if (t === 1) {
           if (phase === 'retreat') begin(overview ? 'overview' : 'rotate')

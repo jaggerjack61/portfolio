@@ -1029,6 +1029,8 @@ section:focus {
   align-items: start;
 }
 .focus-grid > div > span {
+  flex-shrink: 0;
+  white-space: nowrap;
   font-family: var(--font-mono);
   color: var(--accent);
   font-size: 0.7rem;
@@ -2300,3 +2302,131 @@ html.globe-menu-open { overflow: hidden; }
   pointer-events: auto;
 }
 .globe-fallback-menu button { padding: 0.75rem 1.5rem; border: 1px solid #54e5ff55; background: #07121a; }
+
+/* Motion and interaction polish. Global paused/reduced-motion rules switch all of this off. */
+@keyframes scene-rise {
+  from { opacity: 0; transform: translateY(18px); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+@keyframes image-settle {
+  from { opacity: 0; transform: scale(1.035); }
+}
+@keyframes ping {
+  0% { transform: scale(1); opacity: 0.7; }
+  80%, 100% { transform: scale(3.2); opacity: 0; }
+}
+@keyframes hint-bob {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(3px); }
+}
+@keyframes marker-in {
+  from { opacity: 0; translate: 0 8px; }
+}
+.stage-scene > * { animation: scene-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+.stage-scene > :nth-child(2) { animation-delay: 0.09s; }
+.stage-project-image img { animation: image-settle 1s 0.12s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+@media (min-width: 768px) {
+  .stage-scene { align-content: center; }
+}
+
+/* Arrival: the focused panel's frame brightens and its anchor pulses. */
+.destination-panel .stage-viewport { transition: border-color 0.6s, box-shadow 0.6s; }
+.destination-panel.is-focused .stage-viewport {
+  border-color: #54e5ff42;
+  box-shadow: 0 40px 90px -50px #000, inset 0 1px 0 #54e5ff1c;
+}
+.destination-panel.is-focused .destination-anchor > span::after,
+.status-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  animation: ping 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.status-dot { position: relative; }
+
+/* A soft edge tells readers a panel scrolls. */
+.stage-viewport::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 2.5rem;
+  margin-top: -2.5rem;
+  background: linear-gradient(#050a1200, #050a12);
+  pointer-events: none;
+}
+@media (max-width: 767px) {
+  .stage-scene { padding-bottom: 2.75rem; }
+}
+
+/* Buttons and links respond to hover and press. */
+.btn-primary,
+.btn-ghost {
+  transition: background 0.25s, box-shadow 0.25s, border-color 0.25s, color 0.25s, transform 0.15s;
+}
+.btn-primary > span,
+.btn-ghost > span,
+.stage-image-caption > span,
+.project-image-toolbar > span:last-child {
+  display: inline-block;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-primary:hover > span,
+.btn-ghost:hover > span,
+.stage-project-image:hover .stage-image-caption > span,
+.stage-project-image:hover .project-image-toolbar > span:last-child {
+  transform: translate(3px, -3px);
+}
+.btn-primary:active,
+.btn-ghost:active,
+.stage-controls button:active:not(:disabled) { transform: translateY(1px); }
+.stage-controls button { transition: border-color 0.2s, background 0.2s, opacity 0.2s, transform 0.15s; }
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: -0.6rem;
+  left: 0;
+  width: 1rem;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-item:hover::after { transform: scaleX(0.5); }
+.nav-item.active::after { transform: scaleX(1); }
+.globe-menu-toggle { transition: background 0.2s, border-color 0.2s; }
+.contact-value { transition: color 0.2s; }
+
+.stage-project-image { transition: border-color 0.3s, box-shadow 0.4s; }
+.stage-project-image img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.stage-project-image:hover { border-color: #54e5ff66; box-shadow: 0 28px 70px -40px #54e5ff55; }
+.stage-project-image:hover img { transform: scale(1.02); }
+
+.stage-career-list button { transition: color 0.2s; }
+.stage-career-list button:hover:not(.selected) { color: var(--text-primary); }
+.stage-career-dot { transition: background 0.2s, box-shadow 0.2s, transform 0.3s; }
+.stage-career-list button:hover .stage-career-dot { background: var(--accent); transform: scale(1.4); }
+
+/* Footer: the label refreshes with each scene; the cue gently invites a scroll. */
+.stage-scene-label,
+.stage-current { animation: fade-in 0.45s ease backwards; }
+.stage-scroll-hint > span:last-child { display: inline-block; animation: hint-bob 2.2s ease-in-out infinite; }
+.stage-progress > span { box-shadow: 0 0 12px #54e5ff80; }
+.site-header,
+.stage-footer { animation: fade-in 0.5s ease backwards; }
+
+/* Globe menu: copy and markers ease in over the retreating globe. */
+.globe-menu-heading { animation: scene-rise 0.7s 0.2s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+.globe-menu-close { animation: fade-in 0.4s 0.1s backwards; transition: background 0.2s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.globe-menu-close:hover { transform: rotate(90deg); }
+.globe-destination-button { animation: marker-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+.globe-destination-button > span { transition: background 0.2s, border-color 0.2s; }
+.globe-destination-button > i { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; }
+.globe-destination-button:hover > i { transform: scale(1.5); box-shadow: 0 0 14px var(--accent); }
+.globe-fallback-menu button { transition: background 0.2s, border-color 0.2s; }
+.globe-fallback-menu button:hover { background: #153842; border-color: var(--accent); }

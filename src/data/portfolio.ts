@@ -9,6 +9,14 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    title: 'MacClipboard',
+    desc: 'Private clipboard manager and emoji picker for macOS. Press ⌘⇧V anywhere to recall text, links and images, then paste straight back into the app you came from. Pins, named collections, instant search, and 1,900+ searchable emoji, all stored locally in SQLite with no network access.',
+    tech: ['Java 21', 'JavaFX', 'SQLite', 'JNA'],
+    link: 'https://github.com/jaggerjack61/MacClipboard',
+    imageSrc: 'images/projects/MacClipboard.png',
+    imageAlt: 'MacClipboard popup in light and dark mode showing clipboard history, pinned items and collections',
+  },
+  {
     title: 'AreYouStillThere',
     desc: 'Full-stack service monitoring application. Register services, run HTTP/content checks, track incidents and uptime, and send email notifications for outages and recoveries. Uses JWT auth, Django REST backend with Celery for background checks, and a React dashboard.',
     tech: ['Django', 'React', 'Celery', 'Redis'],
@@ -87,6 +95,7 @@ export const orderedProjects = [...projects].sort(
 )
 export const categories: Record<string, string> = {
   Harness: 'AI agent framework',
+  MacClipboard: 'macOS utility',
   AreYouStillThere: 'Observability',
   'Laravel ERD': 'Developer tooling',
   SchemaField: 'Data platform',

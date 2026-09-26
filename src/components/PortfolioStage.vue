@@ -93,7 +93,7 @@ const trackHeight = computed(() => `${height.value + (scenes.length - 1) * strid
 const active = computed(() => scenes[displayedIndex.value])
 const panels = computed(() => sectionCards.value.map((index) => {
   const scene = scenes[index]
-  return { scene, project: orderedProjects[scene.item ?? 0], experience: experiences[scene.item ?? 0] }
+  return { index, scene, project: orderedProjects[scene.item ?? 0], experience: experiences[scene.item ?? 0] }
 }))
 function setViewport(el: unknown, index: number) {
   viewports.value[index] = el as HTMLElement
@@ -339,7 +339,7 @@ onBeforeUnmount(() => {
         </template>
       </div>
       <div
-        v-for="({ scene: panelScene, project, experience }, panelIndex) in panels"
+        v-for="({ index: sceneIndex, scene: panelScene, project, experience }, panelIndex) in panels"
         :key="destinations[panelIndex].id"
         class="destination-panel"
         :class="{ 'is-focused': contentVisible && panelIndex === displayedGroup }"
@@ -360,6 +360,7 @@ onBeforeUnmount(() => {
         >
           <section
             :id="panelIndex === displayedGroup ? panelScene.section : undefined"
+            :key="sceneIndex"
             tabindex="-1"
             class="stage-scene section-shell"
             :class="`scene-${panelScene.kind}`"
@@ -433,7 +434,7 @@ onBeforeUnmount(() => {
               <div class="scene-copy">
                 <p class="section-number">
                   01 / Selected work
-                  <span class="scene-item-count">{{ String((panelScene.item ?? 0) + 1).padStart(2, '0') }} / 09</span>
+                  <span class="scene-item-count">{{ String((panelScene.item ?? 0) + 1).padStart(2, '0') }} / {{ String(orderedProjects.length).padStart(2, '0') }}</span>
                 </p>
                 <span class="stage-project-category">{{ categories[project.title] }}</span>
                 <h2 class="scene-title">
@@ -581,7 +582,7 @@ onBeforeUnmount(() => {
             <template v-else-if="panelScene.kind === 'experience'">
               <div class="scene-copy">
                 <span class="section-number">03 / The journey
-                  <span class="scene-item-count">0{{ (panelScene.item ?? 0) + 1 }} / 04</span></span>
+                  <span class="scene-item-count">0{{ (panelScene.item ?? 0) + 1 }} / 0{{ experiences.length }}</span></span>
                 <p class="stage-project-category">
                   {{ experience.period }}
                 </p>
@@ -665,7 +666,13 @@ onBeforeUnmount(() => {
         class="stage-footer section-shell"
       >
         <div class="stage-position">
-          <span class="stage-current">{{ String(activeIndex + 1).padStart(2, '0') }}</span><span class="stage-total">/ {{ String(scenes.length).padStart(2, '0') }}</span><span class="stage-scene-label">{{ scenes[activeIndex].label }}</span>
+          <span
+            :key="`current-${activeIndex}`"
+            class="stage-current"
+          >{{ String(activeIndex + 1).padStart(2, '0') }}</span><span class="stage-total">/ {{ String(scenes.length).padStart(2, '0') }}</span><span
+            :key="`label-${activeIndex}`"
+            class="stage-scene-label"
+          >{{ scenes[activeIndex].label }}</span>
         </div>
         <div class="stage-scroll-hint">
           <span>{{ activeIndex === scenes.length - 1 ? 'Thanks for exploring.' : 'Scroll to continue' }}</span><span
