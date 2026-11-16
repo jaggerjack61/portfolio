@@ -52,8 +52,8 @@ function optimizeImages(): Plugin {
       }
 
       console.log('\n[optimize-images] Optimizing build images...')
-      console.log('Project screenshots (max 800px wide):')
-      await processDir(path.join(distImages, 'projects'), 800)
+      console.log('Project screenshots (max 1200px wide):')
+      await processDir(path.join(distImages, 'projects'), 1200)
       console.log('Badge images (max 128px wide):')
       await processDir(path.join(distImages, 'badges'), 128)
       console.log('[optimize-images] Done!\n')

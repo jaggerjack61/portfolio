@@ -5,50 +5,48 @@ import { experiences } from '@/data/portfolio'
 <template>
   <section
     id="experience"
-    tabindex="-1"
-    class="content-section experience-section"
+    class="section"
   >
-    <div class="section-shell experience-grid">
-      <div class="experience-heading reveal">
-        <span class="section-number">03 / The journey</span>
-        <h2 class="display-heading">
-          Experience<br>that <span class="muted-heading">compounds.</span>
-        </h2>
-        <p class="section-intro">
-          From commerce and public infrastructure to intelligent systems. Each chapter builds on the last.
+    <div class="shell rail">
+      <p class="label">
+        Experience
+      </p>
+      <div>
+        <h2>Experience that compounds.</h2>
+        <p class="lede">
+          From commerce and public infrastructure to intelligent systems. Each chapter builds on the
+          last.
         </p>
-        <span class="timeline-caption label-mono">2017 → Present</span>
-      </div>
-      <div class="experience-timeline">
-        <article
-          v-for="exp in experiences"
-          :key="exp.company"
-          class="exp-entry reveal"
-          :class="{ 'current-entry': exp.current }"
-        >
-          <span
-            class="timeline-node"
-            aria-hidden="true"
-          />
-          <div class="experience-period">
-            <span>{{ exp.period }}</span><span
-              v-if="exp.current"
-              class="current-badge"
-            >Current</span>
-          </div>
-          <h3>{{ exp.role }}</h3>
-          <p class="experience-company">
-            {{ exp.company }}
-          </p>
-          <ul>
-            <li
-              v-for="item in exp.description"
-              :key="item"
-            >
-              {{ item }}
-            </li>
-          </ul>
-        </article>
+        <ol class="timeline">
+          <li
+            v-for="experience in experiences"
+            :key="experience.company"
+          >
+            <p class="period">
+              {{ experience.period }}
+            </p>
+            <div>
+              <h3>
+                {{ experience.role }}
+                <span
+                  v-if="experience.current"
+                  class="status current"
+                ><i aria-hidden="true" />Current</span>
+              </h3>
+              <p class="company">
+                {{ experience.company }}
+              </p>
+              <ul>
+                <li
+                  v-for="item in experience.description"
+                  :key="item"
+                >
+                  {{ item }}
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ol>
       </div>
     </div>
   </section>

@@ -3,36 +3,21 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx,vue}'],
   theme: {
-    container: {
-      center: true,
-      padding: '1.5rem',
-    },
     extend: {
       colors: {
-        bg: {
-          primary: '#050A12',
-          secondary: '#0A1320',
-          elevated: '#102132',
+        paper: '#F8F7F3',
+        panel: '#EFEDE6',
+        ink: {
+          DEFAULT: '#1F1E1A',
+          soft: '#4A4841',
+          mute: '#6F6C63',
         },
-        surface: '#0A1320',
-        foreground: '#E9F3FA',
-        primary: '#E9F3FA',
-        border: {
-          DEFAULT: '#263C4C',
-          subtle: '#1A2C3B',
-        },
-        text: {
-          primary: '#E9F3FA',
-          secondary: '#A8BAC8',
-          muted: '#92A8B9',
-        },
-        accent: '#54E5FF',
-        'accent-warm': '#54E5FF',
+        rule: '#E3E0D6',
       },
       fontFamily: {
-        sans: ['Instrument Sans', 'sans-serif'],
-        display: ['Instrument Sans', 'sans-serif'],
-        mono: ['DM Mono', 'Courier New', 'monospace'],
+        sans: ['Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['Newsreader', 'Georgia', 'serif'],
+        mono: ['Geist Mono', 'ui-monospace', 'monospace'],
       },
     },
   },

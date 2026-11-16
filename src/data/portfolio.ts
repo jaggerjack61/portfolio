@@ -133,11 +133,31 @@ export const awards = [
 ]
 
 export const certifications = [
-  'AWS Solutions Architect Associate',
-  'HashiCorp Terraform Associate',
-  'OCI Developer Professional',
-  'OCI Foundations Associate',
-  'OCI Data Platform Foundations',
+  {
+    title: 'AWS Solutions Architect Associate',
+    issuer: 'AWS',
+    badge: 'images/badges/aws-certified-solutions-architect-associate-saa-c03.png',
+  },
+  {
+    title: 'HashiCorp Terraform Associate',
+    issuer: 'HashiCorp',
+    badge: 'images/badges/hashicorp-certified-terraform-associate.png',
+  },
+  {
+    title: 'OCI Developer Professional',
+    issuer: 'Oracle',
+    badge: 'images/badges/oracle-cloud-infrastructure-developer-professional.png',
+  },
+  {
+    title: 'OCI Foundations Associate',
+    issuer: 'Oracle',
+    badge: 'images/badges/oracle-cloud-infrastructure-foundations-associate.png',
+  },
+  {
+    title: 'OCI Data Platform Foundations',
+    issuer: 'Oracle',
+    badge: 'images/badges/oracle-data-platform-foundations-associate.png',
+  },
 ]
 
 export const experiences = [
