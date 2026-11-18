@@ -132,7 +132,20 @@ export const awards = [
   { title: 'HIT Book Prize · Best Capstone Design', year: '2023' },
 ]
 
-export const certifications = [
+type Certification = {
+  title: string
+  issuer: string
+  badge: string
+  issued?: { month: string; label: string }
+}
+
+export const certifications: Certification[] = [
+  {
+    title: 'LFS250: Kubernetes and Cloud Native Essentials',
+    issuer: 'The Linux Foundation',
+    badge: 'images/badges/lfs250-kubernetes-and-cloud-native-essentials.png',
+    issued: { month: '2026-08', label: 'Aug 2026' },
+  },
   {
     title: 'AWS Solutions Architect Associate',
     issuer: 'AWS',

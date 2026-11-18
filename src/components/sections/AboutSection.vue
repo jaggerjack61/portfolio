@@ -86,7 +86,16 @@ import { awards, certifications, coreStack, focusAreas, profileImage } from '@/d
                   loading="lazy"
                   decoding="async"
                 >
-                <span>{{ cert.title }}</span><span class="meta">{{ cert.issuer }}</span>
+                <span>
+                  {{ cert.title }}
+                  <template v-if="cert.issued">
+                    <br><time
+                      class="sub"
+                      :datetime="cert.issued.month"
+                    >Issued {{ cert.issued.label }}</time>
+                  </template>
+                </span>
+                <span class="meta">{{ cert.issuer }}</span>
               </li>
             </ul>
           </div>

@@ -652,6 +652,12 @@ h2 {
 
 .certs img + span {
   flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.certs .meta {
+  max-width: 35%;
+  text-align: right;
 }
 
 .stack-label {
